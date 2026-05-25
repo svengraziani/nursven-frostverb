@@ -1,0 +1,19 @@
+/target/
+
+# Local editor and OS metadata
+.DS_Store
+*.swp
+*.swo
+
+# Generated audio renders
+*.wav
+*.aiff
+*.aif
+*.flac
+
+# Local environment files
+.env
+.env.*
+
+# Rust backup files
+**/*.rs.bk
