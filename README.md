@@ -54,3 +54,5 @@ open "/private/tmp/frostverb-plugin-fetch/FrostVerb_artefacts/Standalone/Frost V
 ```
 
 The Rust DSP and C++ wrapper share the same public parameter IDs. `tests/product_contract.rs` checks that `plugin/Source/ParameterIds.h` stays in the same order as `src/params.rs`.
+
+For UI design iteration, see `docs/webview-ui-dev.md`.
