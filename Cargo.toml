@@ -1,0 +1,15 @@
+[package]
+name = "frostverb"
+version = "0.1.0"
+edition = "2024"
+description = "Frost Verb character reverb DSP core and product scaffold"
+license = "UNLICENSED"
+
+[dependencies]
+
+[lib]
+crate-type = ["rlib"]
+
+[[bin]]
+name = "frostverb-render"
+path = "src/bin/frostverb-render.rs"

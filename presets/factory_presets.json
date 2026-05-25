@@ -1,0 +1,146 @@
+[
+  {
+    "name": "Frozen Cave",
+    "category": "Frozen Cave",
+    "params": {
+      "coldness": 0.720000,
+      "wind": 0.140000,
+      "ice_size": 0.780000,
+      "ancient_depth": 0.720000,
+      "frozen_harmonics": 0.320000,
+      "storm": 0.200000,
+      "distance": 0.550000,
+      "decay": 0.760000,
+      "freeze": 0.000000,
+      "mix": 0.420000,
+      "input": 0.750000,
+      "output": 0.750000
+    }
+  },
+  {
+    "name": "Fjord Distance",
+    "category": "Fjord Distance",
+    "params": {
+      "coldness": 0.580000,
+      "wind": 0.220000,
+      "ice_size": 0.680000,
+      "ancient_depth": 0.610000,
+      "frozen_harmonics": 0.200000,
+      "storm": 0.180000,
+      "distance": 0.860000,
+      "decay": 0.640000,
+      "freeze": 0.000000,
+      "mix": 0.360000,
+      "input": 0.750000,
+      "output": 0.750000
+    }
+  },
+  {
+    "name": "Ice Plate",
+    "category": "Ice Plate",
+    "params": {
+      "coldness": 0.880000,
+      "wind": 0.060000,
+      "ice_size": 0.360000,
+      "ancient_depth": 0.240000,
+      "frozen_harmonics": 0.540000,
+      "storm": 0.160000,
+      "distance": 0.220000,
+      "decay": 0.380000,
+      "freeze": 0.000000,
+      "mix": 0.310000,
+      "input": 0.750000,
+      "output": 0.750000
+    }
+  },
+  {
+    "name": "Nordic Temple",
+    "category": "Nordic Temple",
+    "params": {
+      "coldness": 0.640000,
+      "wind": 0.100000,
+      "ice_size": 0.820000,
+      "ancient_depth": 0.880000,
+      "frozen_harmonics": 0.420000,
+      "storm": 0.120000,
+      "distance": 0.480000,
+      "decay": 0.840000,
+      "freeze": 0.000000,
+      "mix": 0.450000,
+      "input": 0.750000,
+      "output": 0.750000
+    }
+  },
+  {
+    "name": "Whiteout",
+    "category": "Whiteout",
+    "params": {
+      "coldness": 0.820000,
+      "wind": 0.740000,
+      "ice_size": 0.610000,
+      "ancient_depth": 0.520000,
+      "frozen_harmonics": 0.280000,
+      "storm": 0.820000,
+      "distance": 0.780000,
+      "decay": 0.580000,
+      "freeze": 0.180000,
+      "mix": 0.400000,
+      "input": 0.750000,
+      "output": 0.750000
+    }
+  },
+  {
+    "name": "Distant Horn",
+    "category": "Distant Horn",
+    "params": {
+      "coldness": 0.520000,
+      "wind": 0.160000,
+      "ice_size": 0.730000,
+      "ancient_depth": 0.660000,
+      "frozen_harmonics": 0.360000,
+      "storm": 0.220000,
+      "distance": 0.920000,
+      "decay": 0.700000,
+      "freeze": 0.000000,
+      "mix": 0.480000,
+      "input": 0.750000,
+      "output": 0.750000
+    }
+  },
+  {
+    "name": "Crystal Tunnel",
+    "category": "Crystal Tunnel",
+    "params": {
+      "coldness": 0.920000,
+      "wind": 0.080000,
+      "ice_size": 0.580000,
+      "ancient_depth": 0.440000,
+      "frozen_harmonics": 0.820000,
+      "storm": 0.240000,
+      "distance": 0.500000,
+      "decay": 0.620000,
+      "freeze": 0.000000,
+      "mix": 0.370000,
+      "input": 0.750000,
+      "output": 0.750000
+    }
+  },
+  {
+    "name": "Dead Snowfield",
+    "category": "Dead Snowfield",
+    "params": {
+      "coldness": 0.760000,
+      "wind": 0.420000,
+      "ice_size": 0.470000,
+      "ancient_depth": 0.380000,
+      "frozen_harmonics": 0.160000,
+      "storm": 0.360000,
+      "distance": 0.900000,
+      "decay": 0.440000,
+      "freeze": 0.080000,
+      "mix": 0.320000,
+      "input": 0.750000,
+      "output": 0.750000
+    }
+  }
+]
