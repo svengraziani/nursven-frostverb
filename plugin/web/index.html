@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Frost Verb</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <canvas id="icefield" aria-hidden="true"></canvas>
+      <section class="panel">
+        <header>
+          <div>
+            <p class="vendor">Nursven</p>
+            <h1>Frost Verb</h1>
+          </div>
+          <div class="preset">Whiteout Engine</div>
+        </header>
+
+        <section class="macros">
+          <button class="orb large" data-param="ice_size"><span>Ice Size</span><strong>55</strong></button>
+          <button class="orb large" data-param="ancient_depth"><span>Ancient Depth</span><strong>48</strong></button>
+          <button class="orb large" data-param="coldness"><span>Coldness</span><strong>62</strong></button>
+        </section>
+
+        <section class="grid">
+          <button class="orb" data-param="wind"><span>Wind</span><strong>18</strong></button>
+          <button class="orb" data-param="frozen_harmonics"><span>Frozen Harmonics</span><strong>24</strong></button>
+          <button class="orb" data-param="storm"><span>Storm</span><strong>20</strong></button>
+          <button class="orb" data-param="distance"><span>Distance</span><strong>42</strong></button>
+        </section>
+
+        <footer>
+          <label>Input <input type="range" min="0" max="1" step="0.001" data-param="input" /></label>
+          <label>Mix <input type="range" min="0" max="1" step="0.001" data-param="mix" /></label>
+          <label>Output <input type="range" min="0" max="1" step="0.001" data-param="output" /></label>
+          <button class="freeze" data-param="freeze">Freeze</button>
+        </footer>
+      </section>
+    </main>
+    <script src="./app.js"></script>
+  </body>
+</html>

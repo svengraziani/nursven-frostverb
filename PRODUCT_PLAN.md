@@ -5,12 +5,12 @@ Frost Verb is planned as a full character reverb product, not a reduced MVP. The
 ## Product Surface
 
 - Stereo audio effect plugin.
-- VST3 and CLAP builds through the planned `nice-plug` host wrapper.
+- VST3 and AU builds through the JUCE 8 host wrapper; CLAP can be added later if the release plan needs it.
 - Standalone build for development and demos.
-- egui UI with layered PNG artwork and native controls.
+- JUCE 8 WebView UI with HTML/CSS/JavaScript, SVG/canvas/WebGL visual layers, and native host parameter binding.
 - Factory preset system with stable parameter IDs.
 - Host automation for every public sound parameter.
-- No AI, ML, or GPU dependency in version 1.
+- No AI or ML dependency in version 1.
 
 ## Public Parameters
 
@@ -43,4 +43,4 @@ The current implementation provides the initial realtime-safe DSP core for each 
 - Parameter automation without clicks.
 - Mono and stereo sources process cleanly.
 - Presets remain compatible across versions.
-- VST3, CLAP, standalone, install, and codesign steps are documented before first public release.
+- VST3, AU, standalone, install, and codesign steps are documented before first public release.

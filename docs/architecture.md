@@ -11,23 +11,27 @@
 - `src/dsp/wind.rs`: procedural stereo wind/noise layer.
 - `src/dsp/freeze.rs`: realtime-safe spectral-hold inspired resonator freeze layer.
 - `src/host.rs`: plugin metadata, preset lookup, normalized automation snapshot, and text state encoding for future plugin wrappers.
+- `src/ffi.rs`: C ABI for the JUCE/C++ plugin shell.
+- `src/ui.rs`: optional `gui` feature with the native egui panel, PNG layer manifest, preset selector, meters, and host-facing parameter changes.
 - `src/bin/frostverb-render.rs`: standalone offline renderer that writes a stereo demo WAV.
+- `plugin/`: JUCE 8 C++ plugin shell with VST3/AU/standalone targets and a WebView editor.
 
 ## Host Integration Plan
 
-The DSP core is separated from the plugin wrapper so VST3, CLAP, standalone, UI, and tests can share one engine. The next host layer should:
+The DSP core is separated from the plugin wrapper so VST3, AU, standalone, UI, and tests can share one engine. The JUCE host layer should:
 
-- Map `PARAMETER_DEFS` into `nice-plug` parameters with the exact existing IDs.
+- Mirror `PARAMETER_DEFS` in `plugin/Source/ParameterIds.h` with the exact existing IDs and order.
+- Call the Rust DSP through `plugin/include/frostverb/frostverb_ffi.h`.
 - Smooth public parameters before or inside `FrostVerbEngine`.
 - Allocate DSP buffers only during prepare/reset.
 - Expose factory presets from `FACTORY_PRESETS`.
 - Keep debug/developer parameters hidden from release builds.
 
-The current repository does not vendor `nice-plug`, VST3 SDK, CLAP SDK, or egui. The stable host-facing contract is implemented locally first so an external wrapper can be added without changing parameter IDs, presets, or DSP state format.
+The current repository does not vendor JUCE. Configure `plugin/` with `FROSTVERB_JUCE_DIR` or `FROSTVERB_FETCH_JUCE=ON`. The stable host-facing contract is implemented locally first so the wrapper can evolve without changing parameter IDs, presets, DSP state format, or WebView control IDs.
 
 ## UI Plan
 
-The UI should be an instrument panel, not a signal-flow dashboard. Layered PNG artwork supplies the visual identity; egui renders all text, values, controls, automation affordances, tooltips, preset menus, and view switching.
+The production UI direction is the JUCE 8 WebView editor in `plugin/web`. It should feel like an instrument panel, not a signal-flow dashboard. HTML/CSS/JavaScript, SVG/canvas/WebGL, and future PNG artwork supply the visual identity; JUCE owns host automation, state, and plugin lifecycle.
 
 Primary layout:
 
@@ -37,3 +41,5 @@ Primary layout:
 - Optional views: Perform and Architecture.
 
 Generated artwork must not include baked-in parameter labels, values, or host-automation state.
+
+The fixed design surface is `1000x620` and scales proportionally inside the WebView. The older optional Rust/egui module remains as a native scaffold, but the active plugin path is JUCE/WebView.

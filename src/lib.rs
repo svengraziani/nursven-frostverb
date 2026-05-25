@@ -4,9 +4,12 @@
 //! independently from the eventual `nice-plug` host wrapper.
 
 pub mod dsp;
+pub mod ffi;
 pub mod host;
 pub mod params;
 pub mod preset;
+#[cfg(feature = "gui")]
+pub mod ui;
 
 pub use dsp::{FrostVerbEngine, ProcessContext, StereoFrame};
 pub use host::{HostParameterSnapshot, PluginDescriptor, StateError};

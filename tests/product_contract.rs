@@ -32,6 +32,33 @@ fn public_parameter_contract_has_unique_ids_and_valid_defaults() {
 }
 
 #[test]
+fn juce_parameter_contract_mirrors_rust_ids() {
+    let header = fs::read_to_string("plugin/Source/ParameterIds.h").unwrap();
+    for param in PARAMETER_DEFS {
+        assert!(
+            header.contains(&format!("\"{}\"", param.id)),
+            "JUCE wrapper missing parameter id {}",
+            param.id
+        );
+    }
+
+    let rust_ids = PARAMETER_DEFS
+        .iter()
+        .map(|param| param.id)
+        .collect::<Vec<_>>();
+    let juce_ids = header
+        .lines()
+        .filter_map(|line| {
+            let trimmed = line.trim();
+            let rest = trimmed.strip_prefix("{ \"")?;
+            Some(rest.split_once('"')?.0)
+        })
+        .collect::<Vec<_>>();
+
+    assert_eq!(juce_ids, rust_ids);
+}
+
+#[test]
 fn host_snapshot_clamps_nonfinite_and_out_of_range_values() {
     let mut snapshot = HostParameterSnapshot::default();
 
