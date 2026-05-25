@@ -150,8 +150,8 @@ fn sanitized_params_clamp_every_public_field() {
 #[test]
 fn plugin_descriptor_is_stable_for_wrappers() {
     assert_eq!(PLUGIN_DESCRIPTOR.name, "Frost Verb");
-    assert_eq!(PLUGIN_DESCRIPTOR.vendor, "Nursvendsp");
-    assert_eq!(PLUGIN_DESCRIPTOR.bundle_id, "com.nursvendsp.frostverb");
+    assert_eq!(PLUGIN_DESCRIPTOR.vendor, "Nursven");
+    assert_eq!(PLUGIN_DESCRIPTOR.bundle_id, "com.nursven.frostverb");
     assert_eq!(PLUGIN_DESCRIPTOR.audio_inputs, 2);
     assert_eq!(PLUGIN_DESCRIPTOR.audio_outputs, 2);
 }
@@ -182,6 +182,31 @@ fn renderer_binary_writes_valid_stereo_wav() {
         u32::from_le_bytes(bytes[40..44].try_into().unwrap()) as usize,
         bytes.len() - 44
     );
+}
+
+#[test]
+fn dummy_host_binary_writes_valid_stereo_wav() {
+    let path = std::env::temp_dir().join(format!(
+        "frostverb-dummy-host-test-{}.wav",
+        std::process::id()
+    ));
+    let status = Command::new(env!("CARGO_BIN_EXE_frostverb-dummy-host"))
+        .arg(&path)
+        .arg("Whiteout")
+        .status()
+        .unwrap();
+
+    assert!(status.success());
+
+    let bytes = fs::read(&path).unwrap();
+    let _ = fs::remove_file(&path);
+
+    assert!(bytes.len() > 44);
+    assert_eq!(&bytes[0..4], b"RIFF");
+    assert_eq!(&bytes[8..12], b"WAVE");
+    assert_eq!(&bytes[22..24], &2_u16.to_le_bytes());
+    assert_eq!(&bytes[24..28], &48_000_u32.to_le_bytes());
+    assert_eq!(&bytes[36..40], b"data");
 }
 
 fn deterministic_input(frames: usize) -> Vec<StereoFrame> {

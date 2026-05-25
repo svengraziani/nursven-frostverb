@@ -5,8 +5,8 @@ use crate::{
 
 pub const PLUGIN_DESCRIPTOR: PluginDescriptor = PluginDescriptor {
     name: "Frost Verb",
-    vendor: "Nursvendsp",
-    bundle_id: "com.nursvendsp.frostverb",
+    vendor: "Nursven",
+    bundle_id: "com.nursven.frostverb",
     version: env!("CARGO_PKG_VERSION"),
     audio_inputs: 2,
     audio_outputs: 2,
@@ -162,5 +162,6 @@ mod tests {
         assert_eq!(PLUGIN_DESCRIPTOR.audio_inputs, 2);
         assert_eq!(PLUGIN_DESCRIPTOR.audio_outputs, 2);
         assert_eq!(PLUGIN_DESCRIPTOR.name, "Frost Verb");
+        assert_eq!(PLUGIN_DESCRIPTOR.vendor, "Nursven");
     }
 }

@@ -13,3 +13,7 @@ crate-type = ["rlib"]
 [[bin]]
 name = "frostverb-render"
 path = "src/bin/frostverb-render.rs"
+
+[[bin]]
+name = "frostverb-dummy-host"
+path = "src/bin/frostverb-dummy-host.rs"

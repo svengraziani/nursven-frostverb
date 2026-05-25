@@ -14,6 +14,12 @@ Frost Verb is a Rust character-reverb core for a cold nordic sound-design plugin
 cargo run --bin frostverb-render -- target/frostverb-demo.wav "Frozen Cave"
 ```
 
+- Dummy host backend that simulates a plugin host with block processing, preset load, state automation, meters, and WAV output:
+
+```sh
+cargo run --bin frostverb-dummy-host -- target/frostverb-dummy-host.wav "Whiteout"
+```
+
 ## Verification
 
 ```sh
