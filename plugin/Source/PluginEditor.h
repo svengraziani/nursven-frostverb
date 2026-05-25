@@ -19,11 +19,13 @@ public:
 
 private:
     void timerCallback() override;
+    void enableWebInspectorIfAvailable();
     void emitInitialParameterState();
     juce::WebBrowserComponent::Options createBrowserOptions();
 
     FrostVerbAudioProcessor& audioProcessor;
     juce::WebBrowserComponent browser;
+    bool webInspectorEnabled = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FrostVerbAudioProcessorEditor)
 };

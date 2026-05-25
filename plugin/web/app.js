@@ -1,9 +1,25 @@
 const params = new Map();
-let setParameterNative = null;
+let nativePromiseId = 1;
+const nativePromises = new Map();
 
-if (window.__JUCE__?.backend) {
-  setParameterNative = window.__JUCE__.backend.getNativeFunction("setParameter");
+function callNative(name, ...args) {
+  const backend = window.__JUCE__?.backend;
+  if (!backend?.emitEvent) return Promise.resolve(null);
+
+  const resultId = nativePromiseId++;
+  const result = new Promise((resolve) => nativePromises.set(resultId, resolve));
+  backend.emitEvent("__juce__invoke", {
+    name,
+    params: args,
+    resultId,
+  });
+  return result;
 }
+
+window.__JUCE__?.backend?.addEventListener("__juce__complete", ({ promiseId, result }) => {
+  nativePromises.get(promiseId)?.(result);
+  nativePromises.delete(promiseId);
+});
 
 function setParam(id, value) {
   const next = Math.max(0, Math.min(1, value));
@@ -15,7 +31,7 @@ function setParam(id, value) {
     if (valueLabel) valueLabel.textContent = String(Math.round(next * 100));
     if (element instanceof HTMLInputElement) element.value = String(next);
   });
-  setParameterNative?.(id, next);
+  callNative("setParameter", id, next);
 }
 
 document.querySelectorAll("[data-param]").forEach((element) => {
@@ -48,10 +64,15 @@ window.__JUCE__?.backend?.addEventListener("meters", ([input, output, wet]) => {
   document.documentElement.style.setProperty("--meter-wet", wet);
 });
 
-const canvas = document.getElementById("icefield");
-const gl = canvas.getContext("webgl", { alpha: true, antialias: true });
+const icefieldCanvas = document.getElementById("icefield");
+const icefieldGl = icefieldCanvas.getContext("webgl", { alpha: true, antialias: true });
 
-if (gl) {
+console.log("JUCE backend", !!window.__JUCE__?.backend);
+console.log("WebGL available", !!icefieldGl);
+console.log("Canvas size", icefieldCanvas.clientWidth, icefieldCanvas.clientHeight);
+
+if (icefieldGl) {
+  const gl = icefieldGl;
   const vertex = `
     attribute vec2 position;
     void main() { gl_Position = vec4(position, 0.0, 1.0); }
@@ -89,10 +110,10 @@ if (gl) {
   const time = gl.getUniformLocation(program, "time");
   const render = (now) => {
     const ratio = window.devicePixelRatio || 1;
-    canvas.width = Math.floor(canvas.clientWidth * ratio);
-    canvas.height = Math.floor(canvas.clientHeight * ratio);
-    gl.viewport(0, 0, canvas.width, canvas.height);
-    gl.uniform2f(resolution, canvas.width, canvas.height);
+    icefieldCanvas.width = Math.floor(icefieldCanvas.clientWidth * ratio);
+    icefieldCanvas.height = Math.floor(icefieldCanvas.clientHeight * ratio);
+    gl.viewport(0, 0, icefieldCanvas.width, icefieldCanvas.height);
+    gl.uniform2f(resolution, icefieldCanvas.width, icefieldCanvas.height);
     gl.uniform1f(time, now * 0.001);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     requestAnimationFrame(render);

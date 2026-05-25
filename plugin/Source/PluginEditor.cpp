@@ -2,6 +2,7 @@
 
 #include "BinaryData.h"
 #include "ParameterIds.h"
+#include "WebViewDebug.h"
 
 namespace
 {
@@ -35,6 +36,7 @@ FrostVerbAudioProcessorEditor::FrostVerbAudioProcessorEditor (FrostVerbAudioProc
     setSize (1000, 620);
     addAndMakeVisible (browser);
     browser.goToURL (juce::WebBrowserComponent::getResourceProviderRoot());
+    enableWebInspectorIfAvailable();
     startTimerHz (30);
 }
 
@@ -45,6 +47,7 @@ void FrostVerbAudioProcessorEditor::resized()
 
 void FrostVerbAudioProcessorEditor::timerCallback()
 {
+    enableWebInspectorIfAvailable();
     emitInitialParameterState();
 
     const auto meters = audioProcessor.getMeters();
@@ -54,6 +57,12 @@ void FrostVerbAudioProcessorEditor::timerCallback()
         meters.wet_peak,
         meters.limiter_gain_reduction_db,
     } });
+}
+
+void FrostVerbAudioProcessorEditor::enableWebInspectorIfAvailable()
+{
+    if (! webInspectorEnabled)
+        webInspectorEnabled = frostverb::enableWebViewInspection (browser);
 }
 
 void FrostVerbAudioProcessorEditor::emitInitialParameterState()

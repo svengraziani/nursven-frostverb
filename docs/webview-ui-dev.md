@@ -35,6 +35,12 @@ cmake --build build/plugin --target FrostVerb_Standalone --config Debug -j 4
 open "build/plugin/FrostVerb_artefacts/Standalone/Frost Verb.app"
 ```
 
+Some generators place configuration-specific artefacts under `Debug/`. In that case run:
+
+```sh
+open "build/plugin-debug/FrostVerb_artefacts/Debug/Standalone/Frost Verb.app"
+```
+
 If using the temporary verification build:
 
 ```sh

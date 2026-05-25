@@ -62,6 +62,12 @@ target_sources(FrostVerb
         Source/PluginProcessor.cpp
         Source/PluginEditor.cpp)
 
+if(APPLE)
+    target_sources(FrostVerb PRIVATE Source/WebViewDebug_mac.mm)
+else()
+    target_sources(FrostVerb PRIVATE Source/WebViewDebug.cpp)
+endif()
+
 target_include_directories(FrostVerb
     PRIVATE
         Source
