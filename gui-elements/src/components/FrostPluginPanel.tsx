@@ -7,13 +7,24 @@ import "./FrostPluginPanel.css";
 
 const ornateTopbar = new URL("../../oranet.png", import.meta.url).href;
 
-export function FrostPluginPanel() {
+type FrostPluginPanelProps = {
+  storm?: number;
+  onStormChange?: (value: number) => void;
+};
+
+export function FrostPluginPanel({ storm, onStormChange }: FrostPluginPanelProps) {
   const [ice, setIce] = useState(68);
   const [wind, setWind] = useState(42);
   const [freeze, setFreeze] = useState(76);
-  const [storm, setStorm] = useState(34);
+  const [internalStorm, setInternalStorm] = useState(74);
   const [decay, setDecay] = useState(61);
   const [depth, setDepth] = useState(48);
+  const stormValue = storm ?? internalStorm;
+
+  const handleStormChange = (value: number) => {
+    setInternalStorm(value);
+    onStormChange?.(value);
+  };
 
   return (
     <section
@@ -45,9 +56,9 @@ export function FrostPluginPanel() {
         />
         <FrostKnob
           label="Storm"
-          value={storm}
+          value={stormValue}
           variant="runeKnob"
-          onChange={setStorm}
+          onChange={handleStormChange}
         />
         <FrostKnob
           label="Decay"
