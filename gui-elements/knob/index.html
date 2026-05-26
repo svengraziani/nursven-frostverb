@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="de">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Frost Rune Knob</title>
+        <style>
+            @font-face {
+                font-family: "Norse Code";
+                src: url("./norse_code/norskode.ttf") format("truetype");
+                font-weight: 400;
+                font-style: normal;
+                font-display: swap;
+            }
+
+            @font-face {
+                font-family: "NorseCode";
+                src: url("./norse_code/norskode.ttf") format("truetype");
+                font-weight: 400;
+                font-style: normal;
+                font-display: swap;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                min-height: 100vh;
+                margin: 0;
+                display: grid;
+                place-items: center;
+                background: #111b22;
+            }
+
+            .knob-stage {
+                width: min(92vw, 560px);
+                aspect-ratio: 1;
+                display: grid;
+                place-items: center;
+            }
+
+            .frost-rune-knob {
+                width: 100%;
+                height: 100%;
+                overflow: visible;
+                cursor: pointer;
+                user-select: none;
+            }
+
+            .frost-rune-knob:active .cap {
+                transform: translateY(3px);
+            }
+
+            .outer-body {
+                fill: url(#outer-body-gradient);
+                filter: url(#outer-shadow);
+            }
+
+            .outer-frost {
+                fill: none;
+                stroke: black;
+                stroke-width: 5;
+                stroke-linecap: round;
+                opacity: 1;
+                filter: url(#frayed-edge);
+            }
+
+            .outer-dark-cut {
+                fill: none;
+                stroke: #061118;
+                stroke-width: 11;
+                opacity: 0.86;
+            }
+
+            .rune-ring {
+                fill: url(#rune-ring-gradient);
+                stroke: rgba(220, 250, 255, 0.42);
+                stroke-width: 2;
+            }
+
+            .rune-ring-inner-shadow {
+                fill: none;
+                stroke: #02070b;
+                stroke-width: 18;
+                opacity: 0.62;
+                filter: url(#soft-blur);
+            }
+
+            .runes {
+                fill: #dff9ff;
+                font-family: "Norse Code", "NorseCode", Georgia, serif;
+                font-size: 22px;
+                font-weight: 400;
+                letter-spacing: 0;
+                filter: url(#rune-glow);
+            }
+
+            .inner-well {
+                fill: #071019;
+                stroke: rgba(177, 225, 240, 0.34);
+                stroke-width: 3;
+                filter: url(#inner-well-organic);
+            }
+
+            .bevel-ring {
+                fill: none;
+                stroke: url(#bevel-gradient);
+                stroke-width: 20;
+                filter: url(#bevel-organic);
+                animation: bevel-pulse 3.8s ease-in-out infinite;
+            }
+
+            .cap {
+                transform-box: fill-box;
+                transform-origin: center;
+                transition: transform 120ms ease;
+            }
+
+            .cap-face {
+                fill: url(#cap-gradient);
+                filter: url(#cap-shadow);
+            }
+
+            .cap-texture {
+                mix-blend-mode: color-burn;
+                opacity: 0.4;
+            }
+
+            .cap-radial-lines path {
+                fill: rgba(223, 250, 255, 0.12);
+                filter: url(#cap-line-blur);
+            }
+
+            .cap-rim-dark {
+                fill: none;
+                stroke: #02090d;
+                stroke-width: 8;
+                opacity: 0.72;
+                filter: url(#rim-organic);
+            }
+
+            .cap-rim-light {
+                fill: none;
+                stroke: rgba(218, 250, 255, 0.72);
+                stroke-width: 3;
+                opacity: 0.75;
+                filter: url(#rim-organic);
+            }
+
+            .top-pointer {
+                fill: #d9faff;
+                stroke: #091722;
+                stroke-width: 3;
+                filter: url(#small-shadow);
+            }
+
+            .cap-triangle {
+                fill: rgba(99, 225, 250, 0.58);
+                stroke: rgba(224, 255, 255, 0.76);
+                stroke-width: 3;
+                filter: url(#cyan-glow);
+            }
+
+            .value-arc {
+                fill: none;
+                stroke: #6defff;
+                stroke-width: 10;
+                stroke-linecap: round;
+                filter: url(#cyan-glow);
+            }
+
+            .value-arc-shadow {
+                fill: none;
+                stroke: rgba(5, 14, 20, 0.72);
+                stroke-width: 16;
+                stroke-linecap: round;
+            }
+
+            .arc-arrow {
+                fill: #6defff;
+                filter: url(#cyan-glow);
+            }
+
+            .ice-dust {
+                mix-blend-mode: screen;
+                opacity: 0.33;
+            }
+
+            @keyframes bevel-pulse {
+                0%,
+                100% {
+                    opacity: 0.82;
+                }
+                50% {
+                    opacity: 1;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <main class="knob-stage">
+            <svg
+                class="frost-rune-knob"
+                viewBox="0 0 420 420"
+                role="img"
+                aria-label="Frost rune knob"
+            >
+                <defs>
+                    <clipPath id="outer-clip">
+                        <circle cx="210" cy="190" r="151" />
+                    </clipPath>
+
+                    <clipPath id="rune-ring-clip">
+                        <path
+                            fill-rule="evenodd"
+                            clip-rule="evenodd"
+                            d="M210 55a135 135 0 1 1 0 270a135 135 0 1 1 0-270M210 98a92 92 0 1 0 0 184a92 92 0 1 0 0-184"
+                        />
+                    </clipPath>
+
+                    <clipPath id="cap-clip">
+                        <circle cx="210" cy="190" r="79" />
+                    </clipPath>
+
+                    <path
+                        id="rune-path"
+                        d="M82 190a128 128 0 1 1 256 0a128 128 0 1 1-256 0"
+                    />
+
+                    <radialGradient
+                        id="outer-body-gradient"
+                        cx="38%"
+                        cy="23%"
+                        r="76%"
+                    >
+                        <stop offset="0" stop-color="#b5d7e4" />
+                        <stop offset=".25" stop-color="#506f7d" />
+                        <stop offset=".58" stop-color="#172b38" />
+                        <stop offset="1" stop-color="#071016" />
+                    </radialGradient>
+
+                    <radialGradient
+                        id="rune-ring-gradient"
+                        cx="38%"
+                        cy="22%"
+                        r="82%"
+                    >
+                        <stop offset="0" stop-color="#b8d8e4" />
+                        <stop offset=".22" stop-color="#6f919f" />
+                        <stop offset=".52" stop-color="#243d4b" />
+                        <stop offset=".78" stop-color="#0c1922" />
+                        <stop offset="1" stop-color="#04090e" />
+                    </radialGradient>
+
+                    <radialGradient id="cap-gradient" cx="39%" cy="28%" r="76%">
+                        <stop offset="0" stop-color="#f0fdff" />
+                        <stop offset=".18" stop-color="#9fc2cf" />
+                        <stop offset=".46" stop-color="#526b78" />
+                        <stop offset=".72" stop-color="#142733" />
+                        <stop offset="1" stop-color="#071017" />
+                    </radialGradient>
+
+                    <linearGradient
+                        id="bevel-gradient"
+                        x1="120"
+                        y1="90"
+                        x2="300"
+                        y2="295"
+                    >
+                        <stop offset="0" stop-color="#d7f5ff" />
+                        <stop offset=".24" stop-color="#6c95a4" />
+                        <stop offset=".54" stop-color="#0a151d" />
+                        <stop offset=".78" stop-color="#315569" />
+                        <stop offset="1" stop-color="#071017" />
+                    </linearGradient>
+
+                    <pattern
+                        id="dirt-pattern"
+                        width="92"
+                        height="92"
+                        patternUnits="userSpaceOnUse"
+                    >
+                        <image
+                            href="dirtmap-2.png"
+                            width="92"
+                            height="92"
+                            preserveAspectRatio="none"
+                        />
+                    </pattern>
+
+                    <pattern
+                        id="cap-dirt-pattern"
+                        width="76"
+                        height="76"
+                        patternUnits="userSpaceOnUse"
+                    >
+                        <image
+                            href="dirtmap.png"
+                            width="76"
+                            height="76"
+                            preserveAspectRatio="none"
+                        />
+                    </pattern>
+
+                    <filter
+                        id="outer-shadow"
+                        x="-30%"
+                        y="-30%"
+                        width="160%"
+                        height="170%"
+                    >
+                        <feDropShadow
+                            dx="0"
+                            dy="16"
+                            stdDeviation="11"
+                            flood-color="#000"
+                            flood-opacity=".72"
+                        />
+                        <feDropShadow
+                            dx="0"
+                            dy="-3"
+                            stdDeviation="3"
+                            flood-color="#000"
+                            flood-opacity=".24"
+                        />
+                    </filter>
+
+                    <filter
+                        id="frayed-edge"
+                        x="-18%"
+                        y="-18%"
+                        width="136%"
+                        height="136%"
+                    >
+                        <feTurbulence
+                            baseFrequency="0.09"
+                            numOctaves="10"
+                            seed="22"
+                            type="fractalNoise"
+                            result="noise"
+                        ></feTurbulence>
+                        <feDisplacementMap
+                            in="SourceGraphic"
+                            in2="noise"
+                            scale="40"
+                            xChannelSelector="R"
+                            yChannelSelector="G"
+                        ></feDisplacementMap>
+                    </filter>
+
+                    <filter id="soft-blur">
+                        <feGaussianBlur stdDeviation="1" />
+                    </filter>
+
+                    <filter id="cap-line-blur">
+                        <feGaussianBlur stdDeviation="1.4" />
+                    </filter>
+
+                    <filter
+                        id="inner-well-organic"
+                        x="-25%"
+                        y="-25%"
+                        width="150%"
+                        height="150%"
+                    >
+                        <feTurbulence
+                            baseFrequency=".045"
+                            numOctaves="3"
+                            seed="41"
+                            type="fractalNoise"
+                            result="ring-noise"
+                        />
+                        <feDisplacementMap
+                            in="SourceGraphic"
+                            in2="ring-noise"
+                            scale="2.2"
+                            xChannelSelector="R"
+                            yChannelSelector="G"
+                            result="warped-ring"
+                        />
+                        <feDropShadow
+                            in="warped-ring"
+                            dx="0"
+                            dy="6"
+                            stdDeviation="5"
+                            flood-color="#000"
+                            flood-opacity=".78"
+                        />
+                    </filter>
+
+                    <filter
+                        id="bevel-organic"
+                        x="-35%"
+                        y="-35%"
+                        width="170%"
+                        height="170%"
+                    >
+                        <feTurbulence
+                            baseFrequency=".052"
+                            numOctaves="3"
+                            seed="67"
+                            type="fractalNoise"
+                            result="bevel-noise"
+                        />
+                        <feDisplacementMap
+                            in="SourceGraphic"
+                            in2="bevel-noise"
+                            scale="2.8"
+                            xChannelSelector="R"
+                            yChannelSelector="G"
+                            result="warped-bevel"
+                        />
+                        <feDropShadow
+                            in="warped-bevel"
+                            dx="0"
+                            dy="3"
+                            stdDeviation="2.5"
+                            flood-color="#000"
+                            flood-opacity=".58"
+                        />
+                        <feDropShadow
+                            dx="0"
+                            dy="0"
+                            stdDeviation="3.4"
+                            flood-color="#8df5ff"
+                            flood-opacity=".18"
+                        >
+                            <animate
+                                attributeName="flood-opacity"
+                                values=".1;.34;.1"
+                                dur="3.8s"
+                                repeatCount="indefinite"
+                            />
+                        </feDropShadow>
+                    </filter>
+
+                    <filter
+                        id="rim-organic"
+                        x="-18%"
+                        y="-18%"
+                        width="136%"
+                        height="136%"
+                    >
+                        <feTurbulence
+                            baseFrequency=".075"
+                            numOctaves="2"
+                            seed="89"
+                            type="fractalNoise"
+                            result="rim-noise"
+                        />
+                        <feDisplacementMap
+                            in="SourceGraphic"
+                            in2="rim-noise"
+                            scale="3.5"
+                            xChannelSelector="R"
+                            yChannelSelector="G"
+                        />
+                    </filter>
+
+                    <filter
+                        id="small-shadow"
+                        x="-35%"
+                        y="-35%"
+                        width="170%"
+                        height="170%"
+                    >
+                        <feDropShadow
+                            dx="0"
+                            dy="3"
+                            stdDeviation="2.5"
+                            flood-color="#000"
+                            flood-opacity=".58"
+                        />
+                    </filter>
+
+                    <filter
+                        id="cap-shadow"
+                        x="-35%"
+                        y="-35%"
+                        width="170%"
+                        height="170%"
+                    >
+                        <feDropShadow
+                            dx="0"
+                            dy="8"
+                            stdDeviation="6"
+                            flood-color="#000"
+                            flood-opacity=".68"
+                        />
+                        <feDropShadow
+                            dx="0"
+                            dy="-2"
+                            stdDeviation="2"
+                            flood-color="#e9fbff"
+                            flood-opacity=".25"
+                        />
+                    </filter>
+
+                    <filter
+                        id="rune-glow"
+                        x="-20%"
+                        y="-20%"
+                        width="140%"
+                        height="140%"
+                    >
+                        <feDropShadow
+                            dx="0"
+                            dy="0"
+                            stdDeviation="5"
+                            flood-color="#a7efff"
+                            flood-opacity="1"
+                        />
+                         <feDropShadow
+                            dx="0"
+                            dy="0"
+                            stdDeviation="5"
+                            flood-color="#a7efff"
+                            flood-opacity="1"
+                        />
+                    </filter>
+
+                    <filter
+                        id="cyan-glow"
+                        x="-80%"
+                        y="-80%"
+                        width="260%"
+                        height="260%"
+                    >
+                        <feDropShadow
+                            dx="0"
+                            dy="0"
+                            stdDeviation="3"
+                            flood-color="#5eeaff"
+                            flood-opacity="1"
+                        />
+                        <feDropShadow
+                            dx="0"
+                            dy="0"
+                            stdDeviation="4"
+                            flood-color="#5eeacc"
+                            flood-opacity="1"
+                        />
+                    </filter>
+                </defs>
+
+                <circle class="outer-body" cx="210" cy="190" r="151" />
+                <circle class="outer-frost" cx="210" cy="190" r="151" />
+
+                <g clip-path="url(#outer-clip)">
+                    <image
+                        class="ice-dust"
+                        href="dirtmap-2.png"
+                        x="44"
+                        y="24"
+                        width="332"
+                        height="332"
+                        preserveAspectRatio="xMidYMid slice"
+                    />
+                    <rect
+                        class="ice-dust"
+                        x="44"
+                        y="24"
+                        width="332"
+                        height="332"
+                        fill="url(#dirt-pattern)"
+                    />
+                </g>
+
+                <circle class="rune-ring" cx="210" cy="190" r="128" />
+
+                <g clip-path="url(#rune-ring-clip)">
+                    <rect
+                        x="72"
+                        y="52"
+                        width="276"
+                        height="276"
+                        fill="url(#dirt-pattern)"
+                        opacity=".22"
+                    />
+                    <circle
+                        class="rune-ring-inner-shadow"
+                        cx="210"
+                        cy="190"
+                        r="98"
+                    />
+                </g>
+
+                <text class="runes">
+                    <textPath href="#rune-path" startOffset="2%">
+                        F R O S T V E R B N U R S V E N D F R O S T V E R B
+                    </textPath>
+                </text>
+
+                <circle class="inner-well" cx="210" cy="190" r="93" />
+                <circle class="bevel-ring" cx="210" cy="190" r="87" />
+                <path class="top-pointer" d="M210 89l12 35h-24z" />
+
+                <g class="cap">
+                    <circle class="cap-face" cx="210" cy="190" r="79" />
+                    <g clip-path="url(#cap-clip)">
+                        <rect
+                            class="cap-texture"
+                            x="131"
+                            y="111"
+                            width="158"
+                            height="158"
+                            fill="url(#cap-dirt-pattern)"
+                        />
+                        <g class="cap-radial-lines">
+                            <path d="M210 190L154 119a96 96 0 0 1 56-18z" />
+                            <path d="M210 190l78-22a96 96 0 0 1-15 74z" />
+                            <path d="M210 190l-69 42a96 96 0 0 1-10-70z" />
+                            <path d="M210 190l11 80a96 96 0 0 1-61-21z" />
+                        </g>
+                    </g>
+                    <circle class="cap-rim-dark" cx="210" cy="190" r="79" />
+                    <circle class="cap-rim-light" cx="210" cy="190" r="75" />
+                    <path class="cap-triangle" d="M210 135l8 15h-16z" />
+                </g>
+            </svg>
+        </main>
+    </body>
+</html>
