@@ -21,6 +21,22 @@
                 font-display: swap;
             }
 
+            @font-face {
+                font-family: "Norse";
+                src: url("./norse/Norse.otf") format("opentype");
+                font-weight: 400;
+                font-style: normal;
+                font-display: swap;
+            }
+
+            @font-face {
+                font-family: "Norse";
+                src: url("./norse/Norsebold.otf") format("opentype");
+                font-weight: 700;
+                font-style: normal;
+                font-display: swap;
+            }
+
             * {
                 box-sizing: border-box;
             }
@@ -30,10 +46,71 @@
                 margin: 0;
                 display: grid;
                 place-items: center;
+                padding: 24px 16px;
                 background: #111b22;
             }
 
+            .demo-shell {
+                display: grid;
+                justify-items: center;
+                gap: 12px;
+                width: min(92vw, 620px);
+            }
+
+            .brand-lockup {
+                display: grid;
+                justify-items: center;
+                gap: 4px;
+                line-height: 0.88;
+                text-align: center;
+                text-transform: uppercase;
+                white-space: nowrap;
+                filter:
+                    drop-shadow(0 2px 0 rgba(20, 15, 9, 0.92))
+                    drop-shadow(0 6px 2px rgba(0, 0, 0, 0.8))
+                    drop-shadow(0 11px 5px rgba(0, 0, 0, 0.55));
+            }
+
+            .brand-lockup__main,
+            .brand-lockup__sub {
+                font-family: "Norse", Georgia, serif;
+                font-weight: 700;
+                letter-spacing: 0.02em;
+                color: #d6be83;
+                -webkit-text-stroke: 1.4px rgba(34, 24, 12, 0.9);
+                text-shadow:
+                    0 -2px 0 rgba(255, 242, 190, 0.85),
+                    0 2px 0 rgba(79, 50, 18, 0.95),
+                    2px 3px 0 rgba(24, 18, 12, 0.95),
+                    4px 5px 0 rgba(0, 0, 0, 0.62),
+                    0 0 2px rgba(255, 238, 174, 0.75);
+                background:
+                    linear-gradient(
+                        180deg,
+                        #fff2b8 0%,
+                        #d7b868 21%,
+                        #8f6126 48%,
+                        #f0d58a 58%,
+                        #6a4218 78%,
+                        #2d1b0b 100%
+                    ),
+                    url("dirtmap.png");
+                background-blend-mode: overlay;
+                -webkit-background-clip: text;
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            .brand-lockup__main {
+                font-size: clamp(58px, 14vw, 112px);
+            }
+
+            .brand-lockup__sub {
+                font-size: clamp(30px, 7vw, 56px);
+            }
+
             .knob-stage {
+                position: relative;
                 width: min(92vw, 560px);
                 aspect-ratio: 1;
                 display: grid;
@@ -44,12 +121,18 @@
                 width: 100%;
                 height: 100%;
                 overflow: visible;
-                cursor: pointer;
+                cursor: grab;
+                outline: none;
+                touch-action: none;
                 user-select: none;
             }
 
-            .frost-rune-knob:active .cap {
-                transform: translateY(3px);
+            .frost-rune-knob:active {
+                cursor: grabbing;
+            }
+
+            .frost-rune-knob:focus-visible {
+                filter: drop-shadow(0 0 12px rgba(120, 238, 255, 0.35));
             }
 
             .outer-body {
@@ -87,13 +170,23 @@
                 filter: url(#soft-blur);
             }
 
-            .runes {
-                fill: #dff9ff;
+            .rune-glyph {
+                fill: rgba(92, 135, 146, 0.56);
                 font-family: "Norse Code", "NorseCode", Georgia, serif;
-                font-size: 22px;
+                font-size: 24px;
                 font-weight: 400;
                 letter-spacing: 0;
+                text-anchor: middle;
+                dominant-baseline: middle;
+                transition:
+                    fill 160ms ease,
+                    opacity 160ms ease;
+            }
+
+            .rune-glyph.is-lit {
+                fill: #dff9ff;
                 filter: url(#rune-glow);
+                opacity: 1;
             }
 
             .inner-well {
@@ -106,14 +199,20 @@
             .bevel-ring {
                 fill: none;
                 stroke: url(#bevel-gradient);
-                stroke-width: 20;
                 filter: url(#bevel-organic);
+                opacity: calc(0.52 + var(--dial-ratio, 0) * 0.48);
+                stroke-width: calc(13px + var(--dial-ratio, 0) * 7px);
                 animation: bevel-pulse 3.8s ease-in-out infinite;
             }
 
             .cap {
-                transform-box: fill-box;
-                transform-origin: center;
+                transition: transform 120ms ease;
+            }
+
+            .cap-indicator {
+                transform: rotate(var(--dial-angle, -135deg));
+                transform-box: view-box;
+                transform-origin: 210px 190px;
                 transition: transform 120ms ease;
             }
 
@@ -190,22 +289,31 @@
             @keyframes bevel-pulse {
                 0%,
                 100% {
-                    opacity: 0.82;
+                    opacity: calc(0.52 + var(--dial-ratio, 0) * 0.42);
                 }
                 50% {
-                    opacity: 1;
+                    opacity: calc(0.62 + var(--dial-ratio, 0) * 0.38);
                 }
             }
         </style>
     </head>
     <body>
-        <main class="knob-stage">
-            <svg
-                class="frost-rune-knob"
-                viewBox="0 0 420 420"
-                role="img"
-                aria-label="Frost rune knob"
-            >
+        <main class="demo-shell">
+            <div class="brand-lockup" aria-label="Frost Verb Nursven">
+                <div class="brand-lockup__main">Frost Verb</div>
+                <div class="brand-lockup__sub">Nursven</div>
+            </div>
+            <div class="knob-stage">
+                <svg
+                    class="frost-rune-knob"
+                    viewBox="0 0 420 420"
+                    role="slider"
+                    tabindex="0"
+                    aria-label="Frost rune dial"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    aria-valuenow="0"
+                >
                 <defs>
                     <clipPath id="outer-clip">
                         <circle cx="210" cy="190" r="151" />
@@ -234,10 +342,10 @@
                         cy="23%"
                         r="76%"
                     >
-                        <stop offset="0" stop-color="#b5d7e4" />
-                        <stop offset=".25" stop-color="#506f7d" />
-                        <stop offset=".58" stop-color="#172b38" />
-                        <stop offset="1" stop-color="#071016" />
+                        <stop offset="0" stop-color="#8fb9cc" />
+                        <stop offset=".25" stop-color="#33586d" />
+                        <stop offset=".58" stop-color="#0d2535" />
+                        <stop offset="1" stop-color="#030b14" />
                     </radialGradient>
 
                     <radialGradient
@@ -246,19 +354,19 @@
                         cy="22%"
                         r="82%"
                     >
-                        <stop offset="0" stop-color="#b8d8e4" />
-                        <stop offset=".22" stop-color="#6f919f" />
-                        <stop offset=".52" stop-color="#243d4b" />
-                        <stop offset=".78" stop-color="#0c1922" />
-                        <stop offset="1" stop-color="#04090e" />
+                        <stop offset="0" stop-color="#8ebed1" />
+                        <stop offset=".22" stop-color="#426a80" />
+                        <stop offset=".52" stop-color="#173447" />
+                        <stop offset=".78" stop-color="#071722" />
+                        <stop offset="1" stop-color="#02070d" />
                     </radialGradient>
 
                     <radialGradient id="cap-gradient" cx="39%" cy="28%" r="76%">
-                        <stop offset="0" stop-color="#f0fdff" />
-                        <stop offset=".18" stop-color="#9fc2cf" />
-                        <stop offset=".46" stop-color="#526b78" />
-                        <stop offset=".72" stop-color="#142733" />
-                        <stop offset="1" stop-color="#071017" />
+                        <stop offset="0" stop-color="#bfefff" />
+                        <stop offset=".18" stop-color="#6f9fb6" />
+                        <stop offset=".46" stop-color="#294f65" />
+                        <stop offset=".72" stop-color="#0b2333" />
+                        <stop offset="1" stop-color="#030a12" />
                     </radialGradient>
 
                     <linearGradient
@@ -268,11 +376,11 @@
                         x2="300"
                         y2="295"
                     >
-                        <stop offset="0" stop-color="#d7f5ff" />
-                        <stop offset=".24" stop-color="#6c95a4" />
-                        <stop offset=".54" stop-color="#0a151d" />
-                        <stop offset=".78" stop-color="#315569" />
-                        <stop offset="1" stop-color="#071017" />
+                        <stop offset="0" stop-color="#aeefff" />
+                        <stop offset=".24" stop-color="#3f748d" />
+                        <stop offset=".54" stop-color="#06111c" />
+                        <stop offset=".78" stop-color="#1b4963" />
+                        <stop offset="1" stop-color="#030a12" />
                     </linearGradient>
 
                     <pattern
@@ -586,15 +694,10 @@
                     />
                 </g>
 
-                <text class="runes">
-                    <textPath href="#rune-path" startOffset="2%">
-                        F R O S T V E R B N U R S V E N D F R O S T V E R B
-                    </textPath>
-                </text>
+                <g class="rune-glyphs" aria-hidden="true"></g>
 
                 <circle class="inner-well" cx="210" cy="190" r="93" />
                 <circle class="bevel-ring" cx="210" cy="190" r="87" />
-                <path class="top-pointer" d="M210 89l12 35h-24z" />
 
                 <g class="cap">
                     <circle class="cap-face" cx="210" cy="190" r="79" />
@@ -616,9 +719,138 @@
                     </g>
                     <circle class="cap-rim-dark" cx="210" cy="190" r="79" />
                     <circle class="cap-rim-light" cx="210" cy="190" r="75" />
+                </g>
+                <g class="cap-indicator">
+                    <path class="top-pointer" d="M210 89l12 35h-24z" />
                     <path class="cap-triangle" d="M210 135l8 15h-16z" />
                 </g>
-            </svg>
+                </svg>
+            </div>
         </main>
+        <script>
+            const knob = document.querySelector(".frost-rune-knob");
+            const runeGlyphs = document.querySelector(".rune-glyphs");
+            let dialValue = 0;
+            const dialMinAngle = -135;
+            const dialMaxAngle = 135;
+            const runeAngles = [];
+
+            function clamp(value, min, max) {
+                return Math.min(max, Math.max(min, value));
+            }
+
+            function setDialValue(value) {
+                dialValue = clamp(value, 0, 100);
+                const ratio = dialValue / 100;
+                const angle = dialMinAngle + (dialValue / 100) * (dialMaxAngle - dialMinAngle);
+
+                knob?.style.setProperty("--dial-angle", `${angle}deg`);
+                knob?.style.setProperty("--dial-ratio", ratio.toFixed(3));
+                knob?.setAttribute("aria-valuenow", `${Math.round(dialValue)}`);
+                updateRuneGlow(angle);
+            }
+
+            function createRuneGlyphs() {
+                if (!(runeGlyphs instanceof SVGGElement)) return;
+
+                const runes = "FROSTVERBNURSVEND";
+                const centerX = 210;
+                const centerY = 190;
+                const radius = 121;
+                const startAngle = dialMinAngle;
+                const endAngle = dialMaxAngle;
+
+                runeGlyphs.replaceChildren();
+                runeAngles.length = 0;
+
+                [...runes].forEach((rune, index) => {
+                    const ratio = runes.length === 1 ? 0 : index / (runes.length - 1);
+                    const angle = startAngle + ratio * (endAngle - startAngle);
+                    const radians = (angle * Math.PI) / 180;
+                    const x = centerX + Math.sin(radians) * radius;
+                    const y = centerY - Math.cos(radians) * radius;
+                    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+
+                    text.classList.add("rune-glyph");
+                    text.textContent = rune;
+                    text.setAttribute("x", x.toFixed(2));
+                    text.setAttribute("y", y.toFixed(2));
+                    text.setAttribute("transform", `rotate(${angle.toFixed(2)} ${x.toFixed(2)} ${y.toFixed(2)})`);
+
+                    runeGlyphs.append(text);
+                    runeAngles.push(angle);
+                });
+            }
+
+            function updateRuneGlow(currentAngle) {
+                if (!(runeGlyphs instanceof SVGGElement)) return;
+
+                [...runeGlyphs.children].forEach((glyph, index) => {
+                    glyph.classList.toggle("is-lit", currentAngle >= runeAngles[index]);
+                });
+            }
+
+            function updateDialFromPointer(event) {
+                if (!(knob instanceof SVGSVGElement)) return;
+
+                const rect = knob.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height * (190 / 420);
+                const dx = event.clientX - centerX;
+                const dy = event.clientY - centerY;
+                let angle = (Math.atan2(dy, dx) * 180) / Math.PI + 90;
+
+                if (angle > 180) angle -= 360;
+
+                angle = clamp(angle, dialMinAngle, dialMaxAngle);
+                setDialValue(((angle - dialMinAngle) / (dialMaxAngle - dialMinAngle)) * 100);
+            }
+
+            function startDialDrag(event) {
+                if (!(knob instanceof SVGSVGElement)) return;
+
+                knob.setPointerCapture(event.pointerId);
+                updateDialFromPointer(event);
+            }
+
+            function dragDial(event) {
+                if (!(knob instanceof SVGSVGElement) || !knob.hasPointerCapture(event.pointerId)) return;
+
+                updateDialFromPointer(event);
+            }
+
+            function endDialDrag(event) {
+                if (!(knob instanceof SVGSVGElement) || !knob.hasPointerCapture(event.pointerId)) return;
+
+                knob.releasePointerCapture(event.pointerId);
+            }
+
+            knob?.addEventListener("pointerdown", startDialDrag);
+            knob?.addEventListener("pointermove", dragDial);
+            knob?.addEventListener("pointerup", endDialDrag);
+            knob?.addEventListener("pointercancel", endDialDrag);
+            knob?.addEventListener("keydown", (event) => {
+                if (event.key === "ArrowRight" || event.key === "ArrowUp") {
+                    event.preventDefault();
+                    setDialValue(dialValue + 2);
+                }
+
+                if (event.key === "ArrowLeft" || event.key === "ArrowDown") {
+                    event.preventDefault();
+                    setDialValue(dialValue - 2);
+                }
+            });
+            knob?.addEventListener(
+                "wheel",
+                (event) => {
+                    event.preventDefault();
+                    setDialValue(dialValue + (event.deltaY < 0 ? 2 : -2));
+                },
+                { passive: false },
+            );
+
+            createRuneGlyphs();
+            setDialValue(0);
+        </script>
     </body>
 </html>
