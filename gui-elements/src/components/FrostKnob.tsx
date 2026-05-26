@@ -1,4 +1,4 @@
-import { useId, type InputHTMLAttributes, type PointerEvent, type WheelEvent } from 'react';
+import { useId, useRef, type InputHTMLAttributes, type PointerEvent, type WheelEvent } from 'react';
 import './FrostKnob.css';
 
 type FrostKnobProps = {
@@ -17,6 +17,7 @@ const dirtMap2 = new URL('../../knob/dirtmap-2.png', import.meta.url).href;
 
 const dialMinAngle = -135;
 const dialMaxAngle = 135;
+const dragPixelsForFullRange = 180;
 
 const variantRunes: Record<NonNullable<FrostKnobProps['variant']>, string> = {
   iceKnob: 'FROSTVERBNURSVEND',
@@ -65,43 +66,30 @@ export function FrostKnob({
   ...inputProps
 }: FrostKnobProps) {
   const svgId = useId().replace(/:/g, '');
+  const dragStartYRef = useRef(0);
+  const dragStartValueRef = useRef(value);
   const range = max - min || 1;
   const ratio = clamp((value - min) / range, 0, 1);
   const angle = dialMinAngle + ratio * (dialMaxAngle - dialMinAngle);
   const runes = variantRunes[variant].split('');
 
-  const setRatio = (nextRatio: number) => {
-    onChange?.(quantizeValue(min + clamp(nextRatio, 0, 1) * range, min, max, step));
-  };
-
   const setDelta = (delta: number) => {
     onChange?.(quantizeValue(value + delta, min, max, step));
   };
 
-  const updateFromPointer = (event: PointerEvent<SVGSVGElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height * (190 / 420);
-    const dx = event.clientX - centerX;
-    const dy = event.clientY - centerY;
-    let nextAngle = (Math.atan2(dy, dx) * 180) / Math.PI + 90;
-
-    if (nextAngle > 180) {
-      nextAngle -= 360;
-    }
-
-    nextAngle = clamp(nextAngle, dialMinAngle, dialMaxAngle);
-    setRatio((nextAngle - dialMinAngle) / (dialMaxAngle - dialMinAngle));
-  };
-
   const handlePointerDown = (event: PointerEvent<SVGSVGElement>) => {
+    event.preventDefault();
+    dragStartYRef.current = event.clientY;
+    dragStartValueRef.current = value;
     event.currentTarget.setPointerCapture(event.pointerId);
-    updateFromPointer(event);
   };
 
   const handlePointerMove = (event: PointerEvent<SVGSVGElement>) => {
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      updateFromPointer(event);
+      const dragDistance = dragStartYRef.current - event.clientY;
+      const dragValue = (dragDistance / dragPixelsForFullRange) * range;
+
+      onChange?.(quantizeValue(dragStartValueRef.current + dragValue, min, max, step));
     }
   };
 
@@ -315,6 +303,12 @@ export function FrostKnob({
             <path className="frost-knob-svg__top-pointer" d="M210 89l12 35h-24z" filter={`url(#${svgId}-small-shadow)`} />
             <path className="frost-knob-svg__cap-triangle" d="M210 135l8 15h-16z" />
           </g>
+          <text className="frost-knob-svg__limit-label" x="92" y="356">
+            {min}
+          </text>
+          <text className="frost-knob-svg__limit-label" x="328" y="356">
+            {max}
+          </text>
         </svg>
       </span>
       <span className="frost-knob__readout">
