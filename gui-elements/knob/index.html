@@ -54,7 +54,7 @@
                 display: grid;
                 justify-items: center;
                 gap: 12px;
-                width: min(92vw, 620px);
+                width: min(92vw, 680px);
             }
 
             .brand-lockup {
@@ -284,6 +284,132 @@
             .ice-dust {
                 mix-blend-mode: screen;
                 opacity: 0.33;
+            }
+
+            .meter-stage {
+                width: min(92vw, 620px);
+            }
+
+            .frost-meter-svg {
+                display: block;
+                width: 100%;
+                height: auto;
+                overflow: visible;
+            }
+
+            .meter-shadow {
+                fill: rgba(0, 0, 0, 0.58);
+                filter: blur(7px);
+                transform: translateY(9px);
+            }
+
+            .meter-edge-crust {
+                fill: none;
+                stroke: #000407;
+                stroke-width: 16;
+                opacity: 0.9;
+                filter: url(#meter-crust-displace);
+            }
+
+            .meter-frame {
+                fill: url(#meter-frame-gradient);
+                stroke: rgba(205, 244, 252, 0.08);
+                stroke-width: 1.5;
+                filter: url(#meter-frame-organic);
+            }
+
+            .meter-bevel {
+                fill: none;
+                stroke: url(#meter-bevel-gradient);
+                stroke-width: 11;
+                opacity: 0.48;
+                filter: url(#meter-bevel-organic);
+            }
+
+            .meter-inner-bevel {
+                fill: none;
+                stroke: url(#meter-inner-bevel-gradient);
+                stroke-width: 9;
+                opacity: 0.5;
+                filter: url(#meter-rim-organic);
+            }
+
+            .meter-grain {
+                fill: url(#meter-ice-grain);
+                opacity: 0.82;
+                mix-blend-mode: screen;
+                filter: url(#meter-rough-frame);
+            }
+
+            .meter-dirt {
+                opacity: 0.48;
+                mix-blend-mode: color-burn;
+                filter: url(#meter-surface-warp);
+            }
+
+            .meter-rim {
+                fill: none;
+                stroke: rgba(0, 5, 8, 0.96);
+                stroke-width: 12;
+                filter: url(#meter-rim-organic);
+            }
+
+            .meter-track-shadow {
+                fill: rgba(0, 0, 0, 0.74);
+                filter: blur(2px);
+            }
+
+            .meter-track {
+                fill: url(#meter-track-gradient);
+                stroke: rgba(170, 231, 240, 0.14);
+                stroke-width: 1.5;
+                filter: url(#meter-track-displace);
+            }
+
+            .meter-track-dirt {
+                fill: url(#meter-track-dirt-pattern);
+                opacity: 0.32;
+                mix-blend-mode: color-burn;
+                filter: url(#meter-track-displace);
+            }
+
+            .meter-track-rim {
+                fill: none;
+                stroke: rgba(222, 251, 255, 0.16);
+                stroke-width: 3;
+                filter: url(#meter-rim-organic);
+            }
+
+            .meter-fill {
+                fill: url(#meter-fill-gradient);
+                filter: url(#meter-fill-glow);
+                opacity: 0.88;
+            }
+
+            .meter-fill-texture {
+                fill: url(#meter-fill-grain);
+                opacity: 0.36;
+                mix-blend-mode: screen;
+                filter: url(#meter-fill-displace);
+            }
+
+            .meter-fill-scan {
+                fill: none;
+                stroke: rgba(255, 255, 255, 0.26);
+                stroke-width: 2;
+                stroke-dasharray: 2 7;
+            }
+
+            .meter-channel-label {
+                fill: #d9faff;
+                font-family: "Norse", Georgia, serif;
+                font-size: 36px;
+                text-anchor: middle;
+                dominant-baseline: middle;
+                paint-order: stroke fill;
+                stroke: rgba(3, 10, 15, 0.86);
+                stroke-width: 3.5;
+                filter: url(#meter-label-glow);
             }
 
             @keyframes bevel-pulse {
@@ -726,10 +852,147 @@
                 </g>
                 </svg>
             </div>
+            <div class="meter-stage" aria-label="Frost stereo meter">
+                <svg class="frost-meter-svg" viewBox="0 0 620 134" role="img" aria-label="Stereo frost meter">
+                    <defs>
+                        <linearGradient id="meter-frame-gradient" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0" stop-color="#9fb9c2" />
+                            <stop offset=".13" stop-color="#607983" />
+                            <stop offset=".32" stop-color="#273f4c" />
+                            <stop offset=".54" stop-color="#0a1922" />
+                            <stop offset=".76" stop-color="#466575" />
+                            <stop offset="1" stop-color="#071015" />
+                        </linearGradient>
+                        <linearGradient id="meter-bevel-gradient" x1="12" y1="8" x2="608" y2="126">
+                            <stop offset="0" stop-color="#d7eef2" />
+                            <stop offset=".2" stop-color="#78919b" />
+                            <stop offset=".48" stop-color="#071016" />
+                            <stop offset=".72" stop-color="#274f60" />
+                            <stop offset="1" stop-color="#010407" />
+                        </linearGradient>
+                        <linearGradient id="meter-inner-bevel-gradient" x1="62" y1="24" x2="574" y2="100">
+                            <stop offset="0" stop-color="#b9d8de" />
+                            <stop offset=".28" stop-color="#264a59" />
+                            <stop offset=".62" stop-color="#02080c" />
+                            <stop offset="1" stop-color="#7db8c4" />
+                        </linearGradient>
+                        <linearGradient id="meter-track-gradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0" stop-color="#0a2029" />
+                            <stop offset=".55" stop-color="#071016" />
+                            <stop offset="1" stop-color="#03070a" />
+                        </linearGradient>
+                        <linearGradient id="meter-fill-gradient" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0" stop-color="#54dce8" />
+                            <stop offset=".55" stop-color="#91f0f3" />
+                            <stop offset="1" stop-color="#dcfbfa" />
+                        </linearGradient>
+                        <pattern id="meter-ice-grain" width="72" height="42" patternUnits="userSpaceOnUse">
+                            <rect width="72" height="42" fill="#7fa5b2" opacity=".16" />
+                            <path d="M3 9h28M39 6h26M11 31h41M55 26h12" stroke="#e8fbff" stroke-width="1.2" opacity=".34" />
+                            <path d="M8 18h18M34 21h30M2 39h21" stroke="#04090c" stroke-width="1.8" opacity=".38" />
+                        </pattern>
+                        <pattern id="meter-dirt-pattern" width="128" height="96" patternUnits="userSpaceOnUse">
+                            <image href="dirtmap-2.png" width="128" height="96" preserveAspectRatio="none" />
+                        </pattern>
+                        <pattern id="meter-track-dirt-pattern" width="96" height="34" patternUnits="userSpaceOnUse">
+                            <image href="dirtmap-3.png" width="96" height="34" preserveAspectRatio="none" />
+                        </pattern>
+                        <pattern id="meter-fill-grain" width="34" height="18" patternUnits="userSpaceOnUse">
+                            <path d="M2 5h9M15 4h16M4 13h17M25 12h7" stroke="#e9ffff" stroke-width="1.2" opacity=".46" />
+                            <path d="M1 9h5M12 9h8M26 7h6" stroke="#1fcde5" stroke-width="2" opacity=".32" />
+                        </pattern>
+                        <clipPath id="meter-fill-clip-l">
+                            <rect x="68" y="33" width="500" height="18" rx="8" />
+                        </clipPath>
+                        <clipPath id="meter-fill-clip-r">
+                            <rect x="68" y="75" width="500" height="18" rx="8" />
+                        </clipPath>
+                        <filter id="meter-rough-frame" x="-8%" y="-22%" width="116%" height="144%">
+                            <feTurbulence baseFrequency=".055" numOctaves="4" seed="17" type="fractalNoise" result="noise" />
+                            <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.2" xChannelSelector="R" yChannelSelector="G" />
+                        </filter>
+                        <filter id="meter-crust-displace" x="-12%" y="-34%" width="124%" height="168%">
+                            <feTurbulence baseFrequency=".085" numOctaves="5" seed="23" type="fractalNoise" result="crust-noise" />
+                            <feDisplacementMap in="SourceGraphic" in2="crust-noise" scale="7" xChannelSelector="R" yChannelSelector="G" />
+                            <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#000" flood-opacity=".7" />
+                        </filter>
+                        <filter id="meter-frame-organic" x="-14%" y="-34%" width="128%" height="168%">
+                            <feTurbulence baseFrequency=".045" numOctaves="3" seed="31" type="fractalNoise" result="frame-noise" />
+                            <feDisplacementMap in="SourceGraphic" in2="frame-noise" scale="3.2" xChannelSelector="R" yChannelSelector="G" result="warped-frame" />
+                            <feDropShadow in="warped-frame" dx="0" dy="7" stdDeviation="5" flood-color="#000" flood-opacity=".76" />
+                            <feDropShadow dx="0" dy="-2" stdDeviation="2.8" flood-color="#d8fbff" flood-opacity=".18" />
+                        </filter>
+                        <filter id="meter-bevel-organic" x="-14%" y="-34%" width="128%" height="168%">
+                            <feTurbulence baseFrequency=".06" numOctaves="3" seed="71" type="fractalNoise" result="bevel-noise" />
+                            <feDisplacementMap in="SourceGraphic" in2="bevel-noise" scale="4.4" xChannelSelector="R" yChannelSelector="G" result="warped-bevel" />
+                            <feDropShadow in="warped-bevel" dx="0" dy="3" stdDeviation="2.4" flood-color="#000" flood-opacity=".62" />
+                            <feDropShadow dx="0" dy="0" stdDeviation="2.4" flood-color="#8df5ff" flood-opacity=".12" />
+                        </filter>
+                        <filter id="meter-rim-organic" x="-12%" y="-28%" width="124%" height="156%">
+                            <feTurbulence baseFrequency=".08" numOctaves="2" seed="83" type="fractalNoise" result="rim-noise" />
+                            <feDisplacementMap in="SourceGraphic" in2="rim-noise" scale="2.2" xChannelSelector="R" yChannelSelector="G" />
+                        </filter>
+                        <filter id="meter-surface-warp" x="-8%" y="-22%" width="116%" height="144%">
+                            <feTurbulence baseFrequency=".035" numOctaves="4" seed="47" type="fractalNoise" result="surface-noise" />
+                            <feDisplacementMap in="SourceGraphic" in2="surface-noise" scale="4.5" xChannelSelector="R" yChannelSelector="G" />
+                        </filter>
+                        <filter id="meter-track-displace" x="-4%" y="-35%" width="108%" height="170%">
+                            <feTurbulence baseFrequency=".09" numOctaves="2" seed="59" type="fractalNoise" result="track-noise" />
+                            <feDisplacementMap in="SourceGraphic" in2="track-noise" scale="1.5" xChannelSelector="R" yChannelSelector="G" />
+                        </filter>
+                        <filter id="meter-fill-displace" x="-4%" y="-55%" width="108%" height="210%">
+                            <feTurbulence baseFrequency=".12" numOctaves="2" seed="61" type="fractalNoise" result="fill-noise" />
+                            <feDisplacementMap in="SourceGraphic" in2="fill-noise" scale="1.2" xChannelSelector="R" yChannelSelector="G" />
+                        </filter>
+                        <filter id="meter-fill-glow" x="-10%" y="-80%" width="120%" height="260%">
+                            <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#5eeaff" flood-opacity=".56" />
+                            <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#5eeaff" flood-opacity=".18" />
+                        </filter>
+                        <filter id="meter-label-glow" x="-80%" y="-80%" width="260%" height="260%">
+                            <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#95efff" flood-opacity=".72" />
+                            <feDropShadow dx="2" dy="3" stdDeviation="2" flood-color="#000" flood-opacity=".72" />
+                        </filter>
+                    </defs>
+                    <path class="meter-shadow" d="M28 8H592L612 28V106L592 126H28L8 106V28Z" />
+                    <path class="meter-edge-crust" d="M28 8H592L612 28V106L592 126H28L8 106V28Z" />
+                    <path class="meter-frame" d="M28 8H592L612 28V106L592 126H28L8 106V28Z" />
+                    <path class="meter-dirt" fill="url(#meter-dirt-pattern)" d="M28 8H592L612 28V106L592 126H28L8 106V28Z" />
+                    <path class="meter-grain" d="M28 8H592L612 28V106L592 126H28L8 106V28Z" />
+                    <path class="meter-bevel" d="M28 8H592L612 28V106L592 126H28L8 106V28Z" />
+                    <path class="meter-inner-bevel" d="M43 22H577L594 39V95L577 112H43L26 95V39Z" />
+                    <path class="meter-rim" d="M28 8H592L612 28V106L592 126H28L8 106V28Z" />
+
+                    <text class="meter-channel-label" x="48" y="43">L</text>
+                    <rect class="meter-track-shadow" x="60" y="27" width="516" height="30" rx="12" />
+                    <rect class="meter-track" x="62" y="28" width="512" height="28" rx="11" />
+                    <rect class="meter-track-dirt" x="66" y="32" width="504" height="20" rx="9" />
+                    <g clip-path="url(#meter-fill-clip-l)">
+                        <rect class="meter-fill meter-fill-l" x="68" y="33" width="0" height="18" />
+                        <rect class="meter-fill-texture meter-fill-l" x="68" y="33" width="0" height="18" />
+                        <path class="meter-fill-scan meter-scan-l" d="M74 38H74" />
+                    </g>
+                    <rect class="meter-track-rim" x="62" y="28" width="512" height="28" rx="11" />
+
+                    <text class="meter-channel-label" x="48" y="85">R</text>
+                    <rect class="meter-track-shadow" x="60" y="69" width="516" height="30" rx="12" />
+                    <rect class="meter-track" x="62" y="70" width="512" height="28" rx="11" />
+                    <rect class="meter-track-dirt" x="66" y="74" width="504" height="20" rx="9" />
+                    <g clip-path="url(#meter-fill-clip-r)">
+                        <rect class="meter-fill meter-fill-r" x="68" y="75" width="0" height="18" />
+                        <rect class="meter-fill-texture meter-fill-r" x="68" y="75" width="0" height="18" />
+                        <path class="meter-fill-scan meter-scan-r" d="M74 80H74" />
+                    </g>
+                    <rect class="meter-track-rim" x="62" y="70" width="512" height="28" rx="11" />
+                </svg>
+            </div>
         </main>
         <script>
             const knob = document.querySelector(".frost-rune-knob");
             const runeGlyphs = document.querySelector(".rune-glyphs");
+            const meterFillL = document.querySelectorAll(".meter-fill-l");
+            const meterFillR = document.querySelectorAll(".meter-fill-r");
+            const meterScanL = document.querySelector(".meter-scan-l");
+            const meterScanR = document.querySelector(".meter-scan-r");
             let dialValue = 0;
             const dialMinAngle = -135;
             const dialMaxAngle = 135;
@@ -748,6 +1011,7 @@
                 knob?.style.setProperty("--dial-ratio", ratio.toFixed(3));
                 knob?.setAttribute("aria-valuenow", `${Math.round(dialValue)}`);
                 updateRuneGlow(angle);
+                updateMeters(ratio);
             }
 
             function createRuneGlyphs() {
@@ -788,6 +1052,17 @@
                 [...runeGlyphs.children].forEach((glyph, index) => {
                     glyph.classList.toggle("is-lit", currentAngle >= runeAngles[index]);
                 });
+            }
+
+            function updateMeters(ratio) {
+                const trackWidth = 500;
+                const leftWidth = trackWidth * ratio;
+                const rightWidth = trackWidth * clamp(ratio * 0.88 + 0.08, 0, 1);
+
+                meterFillL.forEach((element) => element.setAttribute("width", leftWidth.toFixed(1)));
+                meterFillR.forEach((element) => element.setAttribute("width", rightWidth.toFixed(1)));
+                meterScanL?.setAttribute("d", `M74 38H${(68 + leftWidth).toFixed(1)}`);
+                meterScanR?.setAttribute("d", `M74 80H${(68 + rightWidth).toFixed(1)}`);
             }
 
             function updateDialFromPointer(event) {

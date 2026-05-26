@@ -1,0 +1,88 @@
+.frost-meter {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  color: #d8f8ff;
+  font-family: var(--font-norse), serif;
+}
+
+.frost-meter__label {
+  min-height: 22px;
+  color: #d8f4fb;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: 0;
+  text-shadow: 0 0 15px rgba(88, 235, 255, 0.34), 0 3px 8px rgba(0, 0, 0, 0.82);
+}
+
+.frost-meter__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.frost-meter__shadow {
+  fill: rgba(0, 0, 0, 0.45);
+  transform: translateY(6px);
+  filter: blur(4px);
+}
+
+.frost-meter__frame {
+  stroke: rgba(205, 244, 252, 0.38);
+  stroke-width: 2.2;
+}
+
+.frost-meter__grain {
+  opacity: 0.82;
+  mix-blend-mode: screen;
+}
+
+.frost-meter__rim {
+  fill: none;
+  stroke: rgba(2, 8, 12, 0.86);
+  stroke-width: 5;
+}
+
+.frost-meter__track-shadow {
+  fill: rgba(0, 0, 0, 0.54);
+  filter: blur(1px);
+}
+
+.frost-meter__track {
+  stroke: rgba(120, 218, 236, 0.28);
+  stroke-width: 2;
+}
+
+.frost-meter__track-rim {
+  fill: none;
+  stroke: rgba(222, 251, 255, 0.24);
+  stroke-width: 2;
+}
+
+.frost-meter__fill {
+  opacity: 0.94;
+}
+
+.frost-meter__fill-texture {
+  opacity: 0.24;
+}
+
+.frost-meter__fill-scan {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.42);
+  stroke-width: 2;
+  stroke-dasharray: 2 7;
+}
+
+.frost-meter__channel-label {
+  fill: #d9faff;
+  font-family: var(--font-norse), serif;
+  font-size: 35px;
+  line-height: 1;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  paint-order: stroke fill;
+  stroke: rgba(3, 10, 15, 0.86);
+  stroke-width: 2.5;
+}

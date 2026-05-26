@@ -1,0 +1,19 @@
+.sprite-crop {
+  display: inline-block;
+  position: relative;
+  width: var(--sprite-width);
+  height: var(--sprite-height);
+  overflow: hidden;
+  flex: none;
+  pointer-events: none;
+  user-select: none;
+}
+
+.sprite-crop > img {
+  position: absolute;
+  left: var(--sprite-x);
+  top: var(--sprite-y);
+  width: var(--sheet-width);
+  height: var(--sheet-height);
+  max-width: none;
+}

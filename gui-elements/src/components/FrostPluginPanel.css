@@ -1,0 +1,95 @@
+.frost-panel {
+  width: min(1180px, calc(100vw - 32px));
+  padding: 28px;
+  border: 2px solid rgba(175, 232, 242, 0.32);
+  border-radius: 8px;
+  color: #f4dfb4;
+  background:
+    linear-gradient(180deg, rgba(242, 252, 255, 0.08), transparent 18%),
+    radial-gradient(circle at 50% 0%, rgba(96, 228, 255, 0.18), transparent 35%),
+    #162830;
+  box-shadow:
+    inset 0 0 44px rgba(0, 0, 0, 0.72),
+    0 32px 80px rgba(0, 0, 0, 0.44);
+}
+
+.frost-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 88px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(155, 219, 232, 0.22);
+}
+
+.frost-panel__header h1 {
+  margin: 0;
+  font-family: var(--font-norse), serif;
+  font-size: clamp(54px, 9vw, 92px);
+  line-height: 0.8;
+  letter-spacing: 0;
+  text-shadow: 0 5px 12px #000, 0 0 28px rgba(92, 236, 255, 0.2);
+}
+
+.frost-panel__header p {
+  margin: 8px 0 0;
+  color: #c4eaf2;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+.frost-panel__controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 24px;
+  align-items: end;
+  justify-items: center;
+  padding: 28px 0 24px;
+}
+
+.frost-panel__meters {
+  display: grid;
+  grid-template-columns: minmax(320px, 560px) minmax(300px, 520px);
+  gap: 24px;
+  align-items: end;
+  justify-content: center;
+  padding: 0 0 28px;
+}
+
+.frost-panel__mode {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  min-height: 70px;
+  border: 2px solid rgba(119, 225, 244, 0.4);
+  border-radius: 8px;
+  color: #cfffff;
+  background: linear-gradient(180deg, #081318, #102832);
+  box-shadow: inset 0 0 22px rgba(94, 234, 255, 0.2), 0 0 24px rgba(94, 234, 255, 0.13);
+  font-family: var(--font-norse-code), var(--font-norse), serif;
+  font-size: clamp(28px, 5vw, 44px);
+  line-height: 1;
+  text-shadow: 0 0 18px rgba(94, 234, 255, 0.55);
+}
+
+@media (max-width: 840px) {
+  .frost-panel {
+    padding: 18px;
+  }
+
+  .frost-panel__controls {
+    grid-template-columns: 1fr;
+  }
+
+  .frost-panel__meters {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  .frost-panel__header {
+    align-items: flex-start;
+  }
+}

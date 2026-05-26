@@ -1,0 +1,164 @@
+.frost-knob {
+  --label-color: #f6dfae;
+  --cyan: #5eeaff;
+  --arc-color: #67eeff;
+  --rune-color: #edfaff;
+  display: grid;
+  width: 236px;
+  justify-items: center;
+  gap: 8px;
+  color: var(--label-color);
+  font-family: var(--font-norse), serif;
+  text-align: center;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 16px rgba(94, 234, 255, 0.18);
+}
+
+.frost-knob--rune {
+  --arc-color: #9ce7ff;
+  --rune-color: #d8edf5;
+}
+
+.frost-knob--crystal {
+  --arc-color: #5ffff1;
+  --rune-color: #f4ffff;
+}
+
+.frost-knob--wood {
+  --arc-color: #89ddff;
+  --rune-color: #e6f6fa;
+}
+
+.frost-knob__label {
+  min-height: 44px;
+  font-size: 28px;
+  line-height: 0.9;
+  letter-spacing: 0;
+}
+
+.frost-knob__dial {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 250px;
+  height: 250px;
+  filter: drop-shadow(0 20px 18px rgba(0, 0, 0, 0.5));
+}
+
+.frost-knob-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.frost-knob-svg__shadow {
+  fill: rgba(0, 0, 0, 0.42);
+  filter: blur(5px);
+}
+
+.frost-knob-svg__outer {
+  stroke: rgba(219, 251, 255, 0.75);
+  stroke-width: 1.7;
+}
+
+.frost-knob-svg__outer-dark {
+  fill: #081218;
+  stroke: rgba(135, 208, 223, 0.38);
+  stroke-width: 2;
+}
+
+.frost-knob-svg__rune-band {
+  stroke: rgba(235, 252, 255, 0.26);
+  stroke-width: 2;
+}
+
+.frost-knob-svg__value-arc {
+  fill: none;
+  stroke: var(--arc-color);
+  stroke-linecap: round;
+  stroke-width: 6;
+}
+
+.frost-knob-svg__tick {
+  stroke: rgba(212, 242, 248, 0.58);
+  stroke-linecap: round;
+  stroke-width: 1.7;
+}
+
+.frost-knob-svg__tick--major {
+  stroke: rgba(250, 255, 255, 0.9);
+  stroke-width: 3.2;
+}
+
+.frost-knob-svg__runes {
+  fill: var(--rune-color);
+  font-family: var(--font-norse-code), var(--font-norse), serif;
+  font-size: 16px;
+  letter-spacing: 0;
+  text-shadow: none;
+}
+
+.frost-knob-svg__brass {
+  stroke: rgba(19, 13, 8, 0.74);
+  stroke-width: 4;
+}
+
+.frost-knob-svg__brass-groove {
+  fill: none;
+  stroke: rgba(23, 14, 8, 0.62);
+  stroke-width: 5;
+}
+
+.frost-knob-svg__cap {
+  stroke: rgba(221, 250, 255, 0.38);
+  stroke-width: 2;
+}
+
+.frost-knob-svg__brushing path {
+  fill: none;
+  stroke: rgba(240, 252, 255, 0.58);
+  stroke-linecap: round;
+  stroke-width: 1.4;
+}
+
+.frost-knob-svg__pointer path {
+  fill: rgba(206, 247, 255, 0.88);
+  stroke: rgba(6, 17, 23, 0.72);
+  stroke-width: 1.4;
+}
+
+.frost-knob-svg__pointer line {
+  stroke: #d7fbff;
+  stroke-linecap: round;
+  stroke-width: 4;
+}
+
+.frost-knob-svg__ice-speckles {
+  fill: none;
+  stroke: rgba(236, 252, 255, 0.28);
+  stroke-dasharray: 0.5 6.5;
+  stroke-linecap: round;
+  stroke-width: 16;
+}
+
+.frost-knob-svg__highlight {
+  fill: rgba(255, 255, 255, 0.2);
+  filter: blur(9px);
+}
+
+.frost-knob__readout {
+  min-width: 96px;
+  font-family: var(--font-norse-code), var(--font-norse), serif;
+  font-size: 24px;
+  color: #d6edf7;
+}
+
+.frost-knob__input {
+  width: 188px;
+  accent-color: #5eeaff;
+}
+
+.frost-knob__input:focus-visible {
+  outline: 2px solid #9ef7ff;
+  outline-offset: 5px;
+}

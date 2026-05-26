@@ -18,3 +18,5 @@
 
 # Rust backup files
 **/*.rs.bk
+
+node_modules/
