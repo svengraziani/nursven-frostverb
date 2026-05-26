@@ -1,4 +1,4 @@
-import { useId, type InputHTMLAttributes } from 'react';
+import { useId, type InputHTMLAttributes, type PointerEvent, type WheelEvent } from 'react';
 import './FrostKnob.css';
 
 type FrostKnobProps = {
@@ -12,11 +12,17 @@ type FrostKnobProps = {
   onChange?: (value: number) => void;
 } & Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'value' | 'min' | 'max' | 'step' | 'onChange'>;
 
+const dirtMap = new URL('../../knob/dirtmap.png', import.meta.url).href;
+const dirtMap2 = new URL('../../knob/dirtmap-2.png', import.meta.url).href;
+
+const dialMinAngle = -135;
+const dialMaxAngle = 135;
+
 const variantRunes: Record<NonNullable<FrostKnobProps['variant']>, string> = {
-  iceKnob: 'ᚠ ᚱ ᛟ ᛋ ᛏ ᚡ ᛖ ᚱ ᛒ ᚾ ᚢ ᚱ ᛋ ᚡ ᛖ ᚾ',
-  runeKnob: 'ᚦ ᚨ ᚱ ᛁ ᛊ ᛟ ᚾ ᚨ ᚾ ᚦ ᚱ ᚢ ᛗ ᛖ',
-  crystalKnob: 'ᛁ ᛊ ᚲ ᚱ ᛁ ᛊ ᛏ ᚨ ᛚ ᚠ ᚱ ᛖ ᛖ ᛉ ᛖ',
-  woodKnob: 'ᚱ ᛖ ᚡ ᛖ ᚱ ᛒ ᛚ ᛖ ᚾ ᚷ ᛏ ᚺ ᚹ ᛟ ᛟ ᛞ',
+  iceKnob: 'FROSTVERBNURSVEND',
+  runeKnob: 'THARISONGRUMES',
+  crystalKnob: 'ISKRISTALFREEZE',
+  woodKnob: 'REVERBLENGTHWOOD',
 };
 
 const variantClass: Record<NonNullable<FrostKnobProps['variant']>, string> = {
@@ -25,6 +31,27 @@ const variantClass: Record<NonNullable<FrostKnobProps['variant']>, string> = {
   crystalKnob: 'crystal',
   woodKnob: 'wood',
 };
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function getStepPrecision(step: number) {
+  const [, decimals = ''] = String(step).split('.');
+
+  return decimals.length;
+}
+
+function quantizeValue(value: number, min: number, max: number, step: number) {
+  if (step <= 0) {
+    return clamp(value, min, max);
+  }
+
+  const precision = getStepPrecision(step);
+  const stepped = Math.round((value - min) / step) * step + min;
+
+  return Number(clamp(stepped, min, max).toFixed(precision));
+}
 
 export function FrostKnob({
   label,
@@ -38,25 +65,56 @@ export function FrostKnob({
   ...inputProps
 }: FrostKnobProps) {
   const svgId = useId().replace(/:/g, '');
-  const ratio = Math.min(1, Math.max(0, (value - min) / (max - min)));
-  const angle = -136 + ratio * 272;
-  const accentArc = `${Math.max(0.001, ratio * 430)} 999`;
-  const ticks = Array.from({ length: 29 }, (_, index) => {
-    const tickAngle = -136 + index * (272 / 28);
-    const isMajor = index % 4 === 0;
+  const range = max - min || 1;
+  const ratio = clamp((value - min) / range, 0, 1);
+  const angle = dialMinAngle + ratio * (dialMaxAngle - dialMinAngle);
+  const runes = variantRunes[variant].split('');
 
-    return (
-      <line
-        key={index}
-        className={isMajor ? 'frost-knob-svg__tick frost-knob-svg__tick--major' : 'frost-knob-svg__tick'}
-        x1="128"
-        y1={isMajor ? '14' : '20'}
-        x2="128"
-        y2={isMajor ? '32' : '30'}
-        transform={`rotate(${tickAngle} 128 128)`}
-      />
-    );
-  });
+  const setRatio = (nextRatio: number) => {
+    onChange?.(quantizeValue(min + clamp(nextRatio, 0, 1) * range, min, max, step));
+  };
+
+  const setDelta = (delta: number) => {
+    onChange?.(quantizeValue(value + delta, min, max, step));
+  };
+
+  const updateFromPointer = (event: PointerEvent<SVGSVGElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height * (190 / 420);
+    const dx = event.clientX - centerX;
+    const dy = event.clientY - centerY;
+    let nextAngle = (Math.atan2(dy, dx) * 180) / Math.PI + 90;
+
+    if (nextAngle > 180) {
+      nextAngle -= 360;
+    }
+
+    nextAngle = clamp(nextAngle, dialMinAngle, dialMaxAngle);
+    setRatio((nextAngle - dialMinAngle) / (dialMaxAngle - dialMinAngle));
+  };
+
+  const handlePointerDown = (event: PointerEvent<SVGSVGElement>) => {
+    event.currentTarget.setPointerCapture(event.pointerId);
+    updateFromPointer(event);
+  };
+
+  const handlePointerMove = (event: PointerEvent<SVGSVGElement>) => {
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      updateFromPointer(event);
+    }
+  };
+
+  const handlePointerEnd = (event: PointerEvent<SVGSVGElement>) => {
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  };
+
+  const handleWheel = (event: WheelEvent<SVGSVGElement>) => {
+    event.preventDefault();
+    setDelta(event.deltaY < 0 ? step : -step);
+  };
 
   return (
     <label className={`frost-knob frost-knob--${variantClass[variant]}`}>
@@ -64,92 +122,199 @@ export function FrostKnob({
       <span className="frost-knob__dial">
         <svg
           className="frost-knob-svg"
-          viewBox="0 0 256 256"
+          viewBox="0 0 420 420"
           role="img"
           aria-label={`${label} dial at ${value}${unit}`}
+          style={{ '--dial-ratio': ratio, '--dial-angle': `${angle}deg` } as React.CSSProperties}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerEnd}
+          onPointerCancel={handlePointerEnd}
+          onWheel={handleWheel}
         >
           <defs>
-            <radialGradient id={`${svgId}-ice-face`} cx="42%" cy="34%" r="72%">
-              <stop offset="0" stopColor="#f5ffff" />
-              <stop offset="0.2" stopColor="#9ec9d5" />
-              <stop offset="0.48" stopColor="#355465" />
-              <stop offset="0.78" stopColor="#13232c" />
-              <stop offset="1" stopColor="#071017" />
-            </radialGradient>
-            <radialGradient id={`${svgId}-cap`} cx="36%" cy="32%" r="76%">
-              <stop offset="0" stopColor="#f8ffff" />
-              <stop offset="0.22" stopColor="#b7d6de" />
-              <stop offset="0.43" stopColor="#5e808d" />
-              <stop offset="0.66" stopColor="#263c47" />
-              <stop offset="1" stopColor="#081116" />
-            </radialGradient>
-            <linearGradient id={`${svgId}-brass`} x1="42" y1="42" x2="214" y2="214">
-              <stop offset="0" stopColor="#f3e4bd" />
-              <stop offset="0.28" stopColor="#a98d59" />
-              <stop offset="0.56" stopColor="#53402a" />
-              <stop offset="0.82" stopColor="#bd9e64" />
-              <stop offset="1" stopColor="#2f251b" />
-            </linearGradient>
-            <linearGradient id={`${svgId}-ice-edge`} x1="28" y1="12" x2="224" y2="238">
-              <stop offset="0" stopColor="#e6fbff" />
-              <stop offset="0.32" stopColor="#79bfd0" />
-              <stop offset="0.7" stopColor="#213b48" />
-              <stop offset="1" stopColor="#a8edff" />
-            </linearGradient>
-            <filter id={`${svgId}-glow`} x="-35%" y="-35%" width="170%" height="170%">
-              <feGaussianBlur stdDeviation="3.2" result="blur" />
-              <feColorMatrix
-                in="blur"
-                type="matrix"
-                values="0 0 0 0 0.28 0 0 0 0 0.9 0 0 0 0 1 0 0 0 0.8 0"
+            <clipPath id={`${svgId}-outer-clip`}>
+              <circle cx="210" cy="190" r="151" />
+            </clipPath>
+            <clipPath id={`${svgId}-rune-ring-clip`}>
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M210 55a135 135 0 1 1 0 270a135 135 0 1 1 0-270M210 98a92 92 0 1 0 0 184a92 92 0 1 0 0-184"
               />
-              <feMerge>
-                <feMergeNode />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
+            </clipPath>
+            <clipPath id={`${svgId}-cap-clip`}>
+              <circle cx="210" cy="190" r="79" />
+            </clipPath>
+            <radialGradient id={`${svgId}-outer-body-gradient`} cx="38%" cy="23%" r="76%">
+              <stop offset="0" stopColor="#8fb9cc" />
+              <stop offset=".25" stopColor="#33586d" />
+              <stop offset=".58" stopColor="#0d2535" />
+              <stop offset="1" stopColor="#030b14" />
+            </radialGradient>
+            <radialGradient id={`${svgId}-rune-ring-gradient`} cx="38%" cy="22%" r="82%">
+              <stop offset="0" stopColor="#8ebed1" />
+              <stop offset=".22" stopColor="#426a80" />
+              <stop offset=".52" stopColor="#173447" />
+              <stop offset=".78" stopColor="#071722" />
+              <stop offset="1" stopColor="#02070d" />
+            </radialGradient>
+            <radialGradient id={`${svgId}-cap-gradient`} cx="39%" cy="28%" r="76%">
+              <stop offset="0" stopColor="#bfefff" />
+              <stop offset=".18" stopColor="#6f9fb6" />
+              <stop offset=".46" stopColor="#294f65" />
+              <stop offset=".72" stopColor="#0b2333" />
+              <stop offset="1" stopColor="#030a12" />
+            </radialGradient>
+            <linearGradient id={`${svgId}-bevel-gradient`} x1="120" y1="90" x2="300" y2="295">
+              <stop offset="0" stopColor="#aeefff" />
+              <stop offset=".24" stopColor="#3f748d" />
+              <stop offset=".54" stopColor="#06111c" />
+              <stop offset=".78" stopColor="#1b4963" />
+              <stop offset="1" stopColor="#030a12" />
+            </linearGradient>
+            <pattern id={`${svgId}-dirt-pattern`} width="92" height="92" patternUnits="userSpaceOnUse">
+              <image href={dirtMap2} width="92" height="92" preserveAspectRatio="none" />
+            </pattern>
+            <pattern id={`${svgId}-cap-dirt-pattern`} width="76" height="76" patternUnits="userSpaceOnUse">
+              <image href={dirtMap} width="76" height="76" preserveAspectRatio="none" />
+            </pattern>
+            <filter id={`${svgId}-outer-shadow`} x="-30%" y="-30%" width="160%" height="170%">
+              <feDropShadow dx="0" dy="16" stdDeviation="11" floodColor="#000" floodOpacity=".72" />
+              <feDropShadow dx="0" dy="-3" stdDeviation="3" floodColor="#000" floodOpacity=".24" />
             </filter>
-            <filter id={`${svgId}-roughen`}>
-              <feTurbulence baseFrequency="0.95" numOctaves="3" seed="8" type="fractalNoise" />
-              <feDisplacementMap in="SourceGraphic" scale="1.6" />
+            <filter id={`${svgId}-frayed-edge`} x="-18%" y="-18%" width="136%" height="136%">
+              <feTurbulence baseFrequency="0.09" numOctaves="10" seed="22" type="fractalNoise" result="noise" />
+              <feDisplacementMap
+                in="SourceGraphic"
+                in2="noise"
+                scale="40"
+                xChannelSelector="R"
+                yChannelSelector="G"
+              />
             </filter>
-            <path id={`${svgId}-rune-path`} d="M 35 128 A 93 93 0 1 1 221 128 A 93 93 0 1 1 35 128" />
+            <filter id={`${svgId}-soft-blur`}>
+              <feGaussianBlur stdDeviation="1" />
+            </filter>
+            <filter id={`${svgId}-cap-line-blur`}>
+              <feGaussianBlur stdDeviation="1.4" />
+            </filter>
+            <filter id={`${svgId}-inner-well-organic`} x="-25%" y="-25%" width="150%" height="150%">
+              <feTurbulence baseFrequency=".045" numOctaves="3" seed="41" type="fractalNoise" result="ring-noise" />
+              <feDisplacementMap
+                in="SourceGraphic"
+                in2="ring-noise"
+                scale="2.2"
+                xChannelSelector="R"
+                yChannelSelector="G"
+                result="warped-ring"
+              />
+              <feDropShadow in="warped-ring" dx="0" dy="6" stdDeviation="5" floodColor="#000" floodOpacity=".78" />
+            </filter>
+            <filter id={`${svgId}-bevel-organic`} x="-35%" y="-35%" width="170%" height="170%">
+              <feTurbulence baseFrequency=".052" numOctaves="3" seed="67" type="fractalNoise" result="bevel-noise" />
+              <feDisplacementMap
+                in="SourceGraphic"
+                in2="bevel-noise"
+                scale="2.8"
+                xChannelSelector="R"
+                yChannelSelector="G"
+                result="warped-bevel"
+              />
+              <feDropShadow in="warped-bevel" dx="0" dy="3" stdDeviation="2.5" floodColor="#000" floodOpacity=".58" />
+              <feDropShadow dx="0" dy="0" stdDeviation="3.4" floodColor="#8df5ff" floodOpacity=".18" />
+            </filter>
+            <filter id={`${svgId}-rim-organic`} x="-18%" y="-18%" width="136%" height="136%">
+              <feTurbulence baseFrequency=".075" numOctaves="2" seed="89" type="fractalNoise" result="rim-noise" />
+              <feDisplacementMap
+                in="SourceGraphic"
+                in2="rim-noise"
+                scale="3.5"
+                xChannelSelector="R"
+                yChannelSelector="G"
+              />
+            </filter>
+            <filter id={`${svgId}-small-shadow`} x="-35%" y="-35%" width="170%" height="170%">
+              <feDropShadow dx="0" dy="3" stdDeviation="2.5" floodColor="#000" floodOpacity=".58" />
+            </filter>
+            <filter id={`${svgId}-cap-shadow`} x="-35%" y="-35%" width="170%" height="170%">
+              <feDropShadow dx="0" dy="8" stdDeviation="6" floodColor="#000" floodOpacity=".68" />
+              <feDropShadow dx="0" dy="-2" stdDeviation="2" floodColor="#e9fbff" floodOpacity=".25" />
+            </filter>
+            <filter id={`${svgId}-rune-glow`} x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="0" stdDeviation="5" floodColor="#a7efff" floodOpacity="1" />
+              <feDropShadow dx="0" dy="0" stdDeviation="5" floodColor="#a7efff" floodOpacity="1" />
+            </filter>
           </defs>
 
-          <circle className="frost-knob-svg__shadow" cx="128" cy="137" r="110" />
-          <circle className="frost-knob-svg__outer" cx="128" cy="128" r="111" fill={`url(#${svgId}-ice-edge)`} />
-          <circle className="frost-knob-svg__outer-dark" cx="128" cy="128" r="104" />
-          <circle className="frost-knob-svg__rune-band" cx="128" cy="128" r="94" fill={`url(#${svgId}-ice-face)`} />
-          <circle
-            className="frost-knob-svg__value-arc"
-            cx="128"
-            cy="128"
-            r="76"
-            pathLength="430"
-            strokeDasharray={accentArc}
-            transform="rotate(-136 128 128)"
-            filter={`url(#${svgId}-glow)`}
-          />
-          {ticks}
-          <text className="frost-knob-svg__runes">
-            <textPath href={`#${svgId}-rune-path`} startOffset="9%">
-              {variantRunes[variant]}
-            </textPath>
-          </text>
-          <circle className="frost-knob-svg__brass" cx="128" cy="128" r="70" fill={`url(#${svgId}-brass)`} />
-          <circle className="frost-knob-svg__brass-groove" cx="128" cy="128" r="59" />
-          <circle className="frost-knob-svg__cap" cx="128" cy="128" r="54" fill={`url(#${svgId}-cap)`} />
-          <g className="frost-knob-svg__brushing" opacity="0.45">
-            <path d="M82 116c27-13 67-12 92 3" />
-            <path d="M87 143c26 15 58 15 83 0" />
-            <path d="M99 89c16 28 35 55 58 78" />
-            <path d="M93 166c19-33 39-58 70-78" />
+          <circle className="frost-knob-svg__outer-body" cx="210" cy="190" r="151" fill={`url(#${svgId}-outer-body-gradient)`} filter={`url(#${svgId}-outer-shadow)`} />
+          <circle className="frost-knob-svg__outer-frost" cx="210" cy="190" r="151" filter={`url(#${svgId}-frayed-edge)`} />
+          <g clipPath={`url(#${svgId}-outer-clip)`}>
+            <image
+              className="frost-knob-svg__ice-dust"
+              href={dirtMap2}
+              x="44"
+              y="24"
+              width="332"
+              height="332"
+              preserveAspectRatio="xMidYMid slice"
+            />
+            <rect className="frost-knob-svg__ice-dust" x="44" y="24" width="332" height="332" fill={`url(#${svgId}-dirt-pattern)`} />
           </g>
-          <g className="frost-knob-svg__pointer" transform={`rotate(${angle} 128 128)`}>
-            <path d="M128 61 139 88 128 82 117 88Z" />
-            <line x1="128" y1="54" x2="128" y2="83" />
+          <circle className="frost-knob-svg__rune-ring" cx="210" cy="190" r="128" fill={`url(#${svgId}-rune-ring-gradient)`} />
+          <g clipPath={`url(#${svgId}-rune-ring-clip)`}>
+            <rect x="72" y="52" width="276" height="276" fill={`url(#${svgId}-dirt-pattern)`} opacity=".22" />
+            <circle
+              className="frost-knob-svg__rune-ring-inner-shadow"
+              cx="210"
+              cy="190"
+              r="98"
+              filter={`url(#${svgId}-soft-blur)`}
+            />
           </g>
-          <circle className="frost-knob-svg__ice-speckles" cx="128" cy="128" r="50" filter={`url(#${svgId}-roughen)`} />
-          <circle className="frost-knob-svg__highlight" cx="102" cy="95" r="31" />
+          <g aria-hidden="true">
+            {runes.map((rune, index) => {
+              const runeRatio = runes.length === 1 ? 0 : index / (runes.length - 1);
+              const runeAngle = dialMinAngle + runeRatio * (dialMaxAngle - dialMinAngle);
+              const radians = (runeAngle * Math.PI) / 180;
+              const x = 210 + Math.sin(radians) * 121;
+              const y = 190 - Math.cos(radians) * 121;
+              const isLit = angle >= runeAngle;
+
+              return (
+                <text
+                  key={`${rune}-${index}`}
+                  className={isLit ? 'frost-knob-svg__rune-glyph is-lit' : 'frost-knob-svg__rune-glyph'}
+                  x={x.toFixed(2)}
+                  y={y.toFixed(2)}
+                  transform={`rotate(${runeAngle.toFixed(2)} ${x.toFixed(2)} ${y.toFixed(2)})`}
+                  filter={isLit ? `url(#${svgId}-rune-glow)` : undefined}
+                >
+                  {rune}
+                </text>
+              );
+            })}
+          </g>
+          <circle className="frost-knob-svg__inner-well" cx="210" cy="190" r="93" filter={`url(#${svgId}-inner-well-organic)`} />
+          <circle className="frost-knob-svg__bevel-ring" cx="210" cy="190" r="87" stroke={`url(#${svgId}-bevel-gradient)`} filter={`url(#${svgId}-bevel-organic)`} />
+          <g>
+            <circle className="frost-knob-svg__cap-face" cx="210" cy="190" r="79" fill={`url(#${svgId}-cap-gradient)`} filter={`url(#${svgId}-cap-shadow)`} />
+            <g clipPath={`url(#${svgId}-cap-clip)`}>
+              <rect className="frost-knob-svg__cap-texture" x="131" y="111" width="158" height="158" fill={`url(#${svgId}-cap-dirt-pattern)`} />
+              <g className="frost-knob-svg__cap-radial-lines">
+                <path d="M210 190L154 119a96 96 0 0 1 56-18z" filter={`url(#${svgId}-cap-line-blur)`} />
+                <path d="M210 190l78-22a96 96 0 0 1-15 74z" filter={`url(#${svgId}-cap-line-blur)`} />
+                <path d="M210 190l-69 42a96 96 0 0 1-10-70z" filter={`url(#${svgId}-cap-line-blur)`} />
+                <path d="M210 190l11 80a96 96 0 0 1-61-21z" filter={`url(#${svgId}-cap-line-blur)`} />
+              </g>
+            </g>
+            <circle className="frost-knob-svg__cap-rim-dark" cx="210" cy="190" r="79" filter={`url(#${svgId}-rim-organic)`} />
+            <circle className="frost-knob-svg__cap-rim-light" cx="210" cy="190" r="75" filter={`url(#${svgId}-rim-organic)`} />
+          </g>
+          <g className="frost-knob-svg__cap-indicator">
+            <path className="frost-knob-svg__top-pointer" d="M210 89l12 35h-24z" filter={`url(#${svgId}-small-shadow)`} />
+            <path className="frost-knob-svg__cap-triangle" d="M210 135l8 15h-16z" />
+          </g>
         </svg>
       </span>
       <span className="frost-knob__readout">
