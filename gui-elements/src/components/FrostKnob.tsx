@@ -12,6 +12,18 @@ type FrostKnobProps = {
   onChange?: (value: number) => void;
 } & Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'value' | 'min' | 'max' | 'step' | 'onChange'>;
 
+type OrganicFilterSettings = {
+  frayedSeed: number;
+  frayedFrequency: string;
+  frayedScale: number;
+  innerSeed: number;
+  innerScale: number;
+  bevelSeed: number;
+  bevelScale: number;
+  rimSeed: number;
+  rimScale: number;
+};
+
 const dirtMap = new URL('../../knob/dirtmap.png', import.meta.url).href;
 const dirtMap2 = new URL('../../knob/dirtmap-2.png', import.meta.url).href;
 
@@ -54,6 +66,24 @@ function quantizeValue(value: number, min: number, max: number, step: number) {
   return Number(clamp(stepped, min, max).toFixed(precision));
 }
 
+function randomBetween(min: number, max: number) {
+  return min + Math.random() * (max - min);
+}
+
+function createOrganicFilterSettings(): OrganicFilterSettings {
+  return {
+    frayedSeed: Math.floor(randomBetween(1, 999)),
+    frayedFrequency: randomBetween(0.072, 0.118).toFixed(3),
+    frayedScale: Number(randomBetween(30, 48).toFixed(1)),
+    innerSeed: Math.floor(randomBetween(1, 999)),
+    innerScale: Number(randomBetween(1.6, 3.1).toFixed(1)),
+    bevelSeed: Math.floor(randomBetween(1, 999)),
+    bevelScale: Number(randomBetween(2, 3.8).toFixed(1)),
+    rimSeed: Math.floor(randomBetween(1, 999)),
+    rimScale: Number(randomBetween(2.4, 4.6).toFixed(1)),
+  };
+}
+
 export function FrostKnob({
   label,
   value,
@@ -68,6 +98,13 @@ export function FrostKnob({
   const svgId = useId().replace(/:/g, '');
   const dragStartYRef = useRef(0);
   const dragStartValueRef = useRef(value);
+  const organicFilterSettingsRef = useRef<OrganicFilterSettings | null>(null);
+
+  if (!organicFilterSettingsRef.current) {
+    organicFilterSettingsRef.current = createOrganicFilterSettings();
+  }
+
+  const organicFilterSettings = organicFilterSettingsRef.current;
   const range = max - min || 1;
   const ratio = clamp((value - min) / range, 0, 1);
   const angle = dialMinAngle + ratio * (dialMaxAngle - dialMinAngle);
@@ -172,11 +209,17 @@ export function FrostKnob({
               <feDropShadow dx="0" dy="-3" stdDeviation="3" floodColor="#000" floodOpacity=".24" />
             </filter>
             <filter id={`${svgId}-frayed-edge`} x="-18%" y="-18%" width="136%" height="136%">
-              <feTurbulence baseFrequency="0.09" numOctaves="10" seed="22" type="fractalNoise" result="noise" />
+              <feTurbulence
+                baseFrequency={organicFilterSettings.frayedFrequency}
+                numOctaves="10"
+                seed={organicFilterSettings.frayedSeed}
+                type="fractalNoise"
+                result="noise"
+              />
               <feDisplacementMap
                 in="SourceGraphic"
                 in2="noise"
-                scale="40"
+                scale={organicFilterSettings.frayedScale}
                 xChannelSelector="R"
                 yChannelSelector="G"
               />
@@ -188,11 +231,17 @@ export function FrostKnob({
               <feGaussianBlur stdDeviation="1.4" />
             </filter>
             <filter id={`${svgId}-inner-well-organic`} x="-25%" y="-25%" width="150%" height="150%">
-              <feTurbulence baseFrequency=".045" numOctaves="3" seed="41" type="fractalNoise" result="ring-noise" />
+              <feTurbulence
+                baseFrequency=".045"
+                numOctaves="3"
+                seed={organicFilterSettings.innerSeed}
+                type="fractalNoise"
+                result="ring-noise"
+              />
               <feDisplacementMap
                 in="SourceGraphic"
                 in2="ring-noise"
-                scale="2.2"
+                scale={organicFilterSettings.innerScale}
                 xChannelSelector="R"
                 yChannelSelector="G"
                 result="warped-ring"
@@ -200,11 +249,17 @@ export function FrostKnob({
               <feDropShadow in="warped-ring" dx="0" dy="6" stdDeviation="5" floodColor="#000" floodOpacity=".78" />
             </filter>
             <filter id={`${svgId}-bevel-organic`} x="-35%" y="-35%" width="170%" height="170%">
-              <feTurbulence baseFrequency=".052" numOctaves="3" seed="67" type="fractalNoise" result="bevel-noise" />
+              <feTurbulence
+                baseFrequency=".052"
+                numOctaves="3"
+                seed={organicFilterSettings.bevelSeed}
+                type="fractalNoise"
+                result="bevel-noise"
+              />
               <feDisplacementMap
                 in="SourceGraphic"
                 in2="bevel-noise"
-                scale="2.8"
+                scale={organicFilterSettings.bevelScale}
                 xChannelSelector="R"
                 yChannelSelector="G"
                 result="warped-bevel"
@@ -213,11 +268,17 @@ export function FrostKnob({
               <feDropShadow dx="0" dy="0" stdDeviation="3.4" floodColor="#8df5ff" floodOpacity=".18" />
             </filter>
             <filter id={`${svgId}-rim-organic`} x="-18%" y="-18%" width="136%" height="136%">
-              <feTurbulence baseFrequency=".075" numOctaves="2" seed="89" type="fractalNoise" result="rim-noise" />
+              <feTurbulence
+                baseFrequency=".075"
+                numOctaves="2"
+                seed={organicFilterSettings.rimSeed}
+                type="fractalNoise"
+                result="rim-noise"
+              />
               <feDisplacementMap
                 in="SourceGraphic"
                 in2="rim-noise"
-                scale="3.5"
+                scale={organicFilterSettings.rimScale}
                 xChannelSelector="R"
                 yChannelSelector="G"
               />
