@@ -1,10 +1,11 @@
-import { useState } from 'react';
-import { Snowflake, Waves } from 'lucide-react';
-import { FrostKnob } from './FrostKnob';
-import { FrostMeter } from './FrostMeter';
-import { FrostSlider } from './FrostSlider';
-import { SpriteCrop } from './SpriteCrop';
-import './FrostPluginPanel.css';
+import { useState } from "react";
+import { Snowflake, Waves } from "lucide-react";
+import { FrostKnob } from "./FrostKnob";
+import { FrostMeter } from "./FrostMeter";
+import { FrostSlider } from "./FrostSlider";
+import "./FrostPluginPanel.css";
+
+const ornateTopbar = new URL("../../oranet.png", import.meta.url).href;
 
 export function FrostPluginPanel() {
   const [ice, setIce] = useState(68);
@@ -15,28 +16,58 @@ export function FrostPluginPanel() {
   const [depth, setDepth] = useState(48);
 
   return (
-    <section className="frost-panel" aria-label="Frostverb component composition">
+    <section
+      className="frost-panel"
+      aria-label="Frostverb component composition"
+    >
+      <div className="frost-panel__topbar" aria-hidden="true">
+        <img src={ornateTopbar} alt="" />
+      </div>
       <div className="frost-panel__header">
         <div>
           <h1>Frost Verb</h1>
           <p>Nursven WebUI component lab</p>
         </div>
-        <SpriteCrop id="worldTreeEmblem" scale={0.32} />
       </div>
       <div className="frost-panel__controls">
-        <FrostKnob label="Ice Resonance" value={ice} variant="iceKnob" onChange={setIce} />
+        <FrostKnob
+          label="Ice Resonance"
+          value={ice}
+          variant="iceKnob"
+          onChange={setIce}
+        />
         <FrostSlider label="Wind" value={wind} onChange={setWind} />
-        <FrostKnob label="Spectral Freeze" value={freeze} variant="crystalKnob" onChange={setFreeze} />
-        <FrostKnob label="Storm" value={storm} variant="runeKnob" onChange={setStorm} />
-        <FrostKnob label="Decay" value={decay} variant="woodKnob" onChange={setDecay} />
-        <FrostKnob label="Ancient Depth" value={depth} variant="runeKnob" onChange={setDepth} />
+        <FrostKnob
+          label="Spectral Freeze"
+          value={freeze}
+          variant="crystalKnob"
+          onChange={setFreeze}
+        />
+        <FrostKnob
+          label="Storm"
+          value={storm}
+          variant="runeKnob"
+          onChange={setStorm}
+        />
+        <FrostKnob
+          label="Decay"
+          value={decay}
+          variant="woodKnob"
+          onChange={setDecay}
+        />
+        <FrostKnob
+          label="Ancient Depth"
+          value={depth}
+          variant="runeKnob"
+          onChange={setDepth}
+        />
       </div>
       <div className="frost-panel__meters">
         <FrostMeter
           label="Glacial Return"
           channels={[
-            { label: 'L', value: 42 },
-            { label: 'R', value: 48 },
+            { label: "L", value: 42 },
+            { label: "R", value: 48 },
           ]}
           width={560}
         />

@@ -44,6 +44,8 @@ body {
   min-height: 100vh;
   margin: 0;
   background:
+    linear-gradient(rgba(6, 15, 20, 0.28), rgba(6, 15, 20, 0.5)),
+    url('../../background.png') center / cover fixed,
     radial-gradient(circle at 30% 0%, rgba(96, 209, 231, 0.2), transparent 34rem),
     linear-gradient(135deg, #0c161c, #203943 58%, #111d22);
 }
